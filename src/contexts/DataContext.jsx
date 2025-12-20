@@ -44,6 +44,14 @@ export function DataProvider({ children }) {
         setWeightHistory(prev => [...prev, entry]);
     };
 
+    const deleteLog = (id) => {
+        setLogs(prev => prev.filter(log => log.id !== id));
+    };
+
+    const updateLog = (id, updatedData) => {
+        setLogs(prev => prev.map(log => log.id === id ? { ...log, ...updatedData } : log));
+    };
+
     const getLogsByDate = (dateString) => {
         // dateString YYYY-MM-DD
         return logs.filter(log => log.timestamp.startsWith(dateString));
@@ -58,6 +66,8 @@ export function DataProvider({ children }) {
         logs,
         weightHistory,
         addLog,
+        deleteLog,
+        updateLog,
         addWeight,
         getLogsByDate,
         getLatestWeight

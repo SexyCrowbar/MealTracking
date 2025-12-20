@@ -17,7 +17,7 @@ export async function analyzeMealWithAI(promptText, imageBase64, apiKey, setting
     "protein": number (grams),
     "carbs": number (grams),
     "fat": number (grams)
-    ${settings.showGlycemicIndex ? ', "glycemicIndex": number (estimated)' : ''}
+    ${settings.showGI ? ', "glycemicIndex": number (estimated)' : ''}
     ${settings.showInsulin ? ', "estimatedInsulin": number (estimated units)' : ''}
     ${settings.allergens ? `, "allergenWarning": "string warning if ${settings.allergens} is detected, else null"` : ''}
   }

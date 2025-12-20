@@ -180,6 +180,8 @@ input:focus, select:focus, textarea:focus {
 .mt-4 { margin-top: var(--space-md); }
 .mb-4 { margin-bottom: var(--space-md); }
 .w-full { width: 100%; }
+.h-full { height: 100%; }
+.h-64 { height: 16rem; }
 
 /* Animations */
 @keyframes fadeIn {

@@ -69,6 +69,39 @@ export default function PlanScreen() {
                     </div>
                 </div>
             </div>
+
+            {/* Weekly Overview */}
+            <div className="card">
+                <h3>Weekly Schedule</h3>
+                <p className="text-muted text-sm mb-4">ZigZag Rotation (High: Mon, Wed, Fri)</p>
+                <div className="flex flex-col gap-2">
+                    {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, index) => {
+                        // Mon(0), Wed(2), Fri(4) -> Workout days
+                        const isHigh = [0, 2, 4].includes(index);
+                        const cals = isHigh ? zigZag.workout : zigZag.rest;
+                        const isToday = new Date().getDay() === (index + 1) % 7; // getDay() Sun=0, so Mon=1...
+
+                        return (
+                            <div
+                                key={day}
+                                className="flex justify-between items-center p-2 rounded"
+                                style={{
+                                    backgroundColor: isToday ? 'var(--surface-hover)' : 'transparent',
+                                    border: isToday ? '1px solid var(--primary)' : 'none'
+                                }}
+                            >
+                                <div className="flex items-center gap-2">
+                                    <span style={{ width: '40px', fontWeight: 'bold' }}>{day}</span>
+                                    <span className={`text-xs px-2 py-0.5 rounded-full ${isHigh ? 'bg-primary/20 text-primary' : 'bg-surface text-muted'}`} style={{ border: '1px solid var(--border)' }}>
+                                        {isHigh ? 'Workout' : 'Rest'}
+                                    </span>
+                                </div>
+                                <strong>{cals}</strong>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
         </div>
     );
 }

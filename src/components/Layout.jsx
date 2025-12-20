@@ -1,7 +1,9 @@
 import React from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
-import { Calendar, PlusCircle, BarChart2, Settings } from 'lucide-react';
+
+import { Calendar, PlusCircle, BarChart2, Settings, Book } from 'lucide-react';
 import styles from './Layout.module.css';
+
 
 export default function Layout() {
     return (
@@ -20,6 +22,11 @@ export default function Layout() {
                     <NavLink to="/record" className={({ isActive }) => `${styles.navItem} ${isActive ? styles.active : ''}`}>
                         <PlusCircle size={24} />
                         <span>Record</span>
+                    </NavLink>
+
+                    <NavLink to="/history" className={({ isActive }) => `${styles.navItem} ${isActive ? styles.active : ''}`}>
+                        <Book size={24} />
+                        <span>History</span>
                     </NavLink>
 
                     <NavLink to="/progress" className={({ isActive }) => `${styles.navItem} ${isActive ? styles.active : ''}`}>
