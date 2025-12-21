@@ -5,6 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI ZigZag Tracker</title>
+    <!-- PWA / Mobile Capable -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="manifest" id="manifest-placeholder">
+
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -321,36 +327,37 @@
 
         @keyframes spin {
             100% {
-                transform: rotate(360deg);
-            }
-        }
 
-        /* Media Previews */
-        #img-preview {
-            max-width: 100%;
-            border-radius: 12px;
-            margin-top: 1rem;
-            display: none;
-        }
+                /* Media Previews */
+                #img-preview {
+                    max-width: 100%;
+                    border-radius: 12px;
+                    margin-top: 1rem;
+                    display: none;
+                }
 
-        .recording-pulse {
-            animation: pulse-red 1.5s infinite;
-            color: var(--danger) !important;
-        }
+                .recording-pulse {
+                    animation: pulse-red 1.5s infinite;
+                    color: var(--danger) !important;
+                }
 
-        @keyframes pulse-red {
-            0% {
-                transform: scale(1);
-            }
+                @keyframes pulse-red {
+                    0% {
+                        transform: scale(1);
+                    }
 
-            50% {
-                transform: scale(1.1);
-            }
+                    50% {
+                        transform: scale(1.1);
+                    }
 
-            100% {
-                transform: scale(1);
-            }
-        }
+                    100% {
+                        transform: scale(1);
+                    }
+                }
+
+                .hidden {
+                    display: none !important;
+                }
     </style>
 </head>
 
@@ -509,6 +516,22 @@
             <p class="subtitle">Log manually or use Gemini AI</p>
 
             <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h3>Favorites</h3>
+                    <button class="btn btn-secondary"
+                        onclick="document.getElementById('fav-section').classList.toggle('hidden')"
+                        style="width:auto; padding:0.4rem;"><i class="fa-solid fa-chevron-down"></i></button>
+                </div>
+                <div id="fav-section" class="hidden" style="margin-top:1rem;">
+                    <div id="fav-list" style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                        <!-- Fav buttons -->
+                    </div>
+                    <p id="no-favs" style="color:var(--text-muted); font-size:0.8rem; margin-top:0.5rem;">No favorites
+                        yet. Star a meal to save it here.</p>
+                </div>
+            </div>
+
+            <div class="card">
                 <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:0.5rem; margin-bottom:1rem;">
                     <button class="btn btn-secondary" onclick="app.trackMode('text')" id="mode-text"><i
                             class="fa-solid fa-keyboard"></i></button>
@@ -589,9 +612,14 @@
                     </p>
                 </div>
 
-                <button class="btn" style="background:var(--secondary);" onclick="app.saveMeal()">
-                    <i class="fa-solid fa-check"></i> Save to Log
-                </button>
+                <div style="display:flex; gap:0.5rem; margin-top:1rem;">
+                    <button class="btn" style="background:var(--secondary); flex:1;" onclick="app.saveMeal()">
+                        <i class="fa-solid fa-check"></i> Save
+                    </button>
+                    <button class="btn btn-secondary" style="flex:1;" onclick="app.saveFavorite()">
+                        <i class="fa-regular fa-star"></i> Fav
+                    </button>
+                </div>
             </div>
         </section>
 
@@ -609,6 +637,11 @@
                 </div>
                 <div style="height:250px; margin-bottom:1.5rem;">
                     <canvas id="weightChart"></canvas>
+                </div>
+
+                <h3>Calorie Adherence</h3>
+                <div style="height:250px; margin-bottom:1.5rem;">
+                    <canvas id="calChart"></canvas>
                 </div>
 
                 <h4>Weight History</h4>
@@ -749,6 +782,7 @@
                     showInsulin: false,
                     allergens: ''
                 },
+                favorites: [],
                 todayWorkout: false
             },
 
@@ -771,6 +805,7 @@
                     document.querySelector('nav').style.display = 'none';
                 } else {
                     this.renderPlan();
+                    this.renderFavorites();
                     this.renderHistory();
                     this.updateCharts();
                 }
@@ -802,17 +837,8 @@
 
                     // Ensure defaults if missing (migrations)
                     if (!this.data.weightHistory) this.data.weightHistory = [];
-
-                    // Profile/Nav logic
-                    if (this.data.profile) {
-                        document.getElementById('p-age').value = this.data.profile.age;
-                        document.getElementById('p-sex').value = this.data.profile.sex;
-                        document.getElementById('p-height').value = this.data.profile.height;
-                        document.getElementById('p-weight').value = this.data.profile.weight;
-                        document.getElementById('p-goal-weight').value = this.data.profile.goalWeight;
-                        document.getElementById('p-activity').value = this.data.profile.activity;
-                        document.querySelector('nav').style.display = 'flex';
-                    }
+                    if (!this.data.favorites) this.data.favorites = [];
+                    this.renderFavorites();
                 }
             },
 
@@ -1159,6 +1185,7 @@
                 document.getElementById('m-pro').value = '';
                 document.getElementById('m-carb').value = '';
                 document.getElementById('m-fat').value = '';
+                document.getElementById('ai-extras').style.display = 'none';
 
                 alert('Meal Logged!');
             },
@@ -1352,21 +1379,19 @@
             },
 
             updateCharts() {
-                const ctx = document.getElementById('weightChart').getContext('2d');
-
-                // Prepare data
-                const labels = this.data.weightHistory.map(w => new Date(w.date).toLocaleDateString());
-                const dataPoints = this.data.weightHistory.map(w => w.weight);
+                // Weight Chart
+                const ctxW = document.getElementById('weightChart').getContext('2d');
+                const labelsW = this.data.weightHistory.map(w => new Date(w.date).toLocaleDateString());
+                const dataW = this.data.weightHistory.map(w => w.weight);
 
                 if (window.myWaitChart) window.myWaitChart.destroy();
-
-                window.myWaitChart = new Chart(ctx, {
+                window.myWaitChart = new Chart(ctxW, {
                     type: 'line',
                     data: {
-                        labels: labels,
+                        labels: labelsW,
                         datasets: [{
                             label: 'Weight (kg)',
-                            data: dataPoints,
+                            data: dataW,
                             borderColor: '#6366f1',
                             tension: 0.4,
                             fill: true,
@@ -1374,15 +1399,123 @@
                         }]
                     },
                     options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: { grid: { color: 'rgba(255,255,255,0.05)' } },
-                            x: { grid: { color: 'rgba(255,255,255,0.05)' } }
-                        },
+                        responsive: true, maintainAspectRatio: false,
+                        scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' } }, x: { grid: { color: 'rgba(255,255,255,0.05)' } } },
                         plugins: { legend: { display: false } }
                     }
                 });
+
+                // Calorie Chart
+                const ctxC = document.getElementById('calChart').getContext('2d');
+                // Group by date
+                const calHistory = {};
+                // Get last 7 days
+                const dates = [];
+                for (let i = 6; i >= 0; i--) {
+                    const d = new Date();
+                    d.setDate(d.getDate() - i);
+                    dates.push(d.toDateString());
+                    calHistory[d.toDateString()] = 0;
+                }
+
+                this.data.logs.forEach(l => {
+                    const d = new Date(l.date).toDateString();
+                    if (calHistory[d] !== undefined) calHistory[d] += (l.cals || 0);
+                });
+
+                const dataC = dates.map(d => calHistory[d]);
+                const displayLabels = dates.map(d => d.slice(0, 3)); // Mon, Tue...
+
+                if (window.myCalChart) window.myCalChart.destroy();
+                window.myCalChart = new Chart(ctxC, {
+                    type: 'bar',
+                    data: {
+                        labels: displayLabels,
+                        datasets: [{
+                            label: 'Calories',
+                            data: dataC,
+                            backgroundColor: dataC.map(c => c > (this.calculateTargets().cals + 200) ? '#ef4444' : '#10b981'),
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' } }, x: { grid: { display: false } } },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            },
+
+            // --- FAVORITES ---
+            saveFavorite() {
+                const name = document.getElementById('m-name').value;
+                if (!name) return alert('Enter a name to favorite');
+
+                const fav = {
+                    id: Date.now(),
+                    name: name,
+                    cals: Number(document.getElementById('m-cals').value),
+                    pro: Number(document.getElementById('m-pro').value),
+                    carb: Number(document.getElementById('m-carb').value),
+                    fat: Number(document.getElementById('m-fat').value)
+                };
+
+                this.data.favorites.push(fav);
+                this.save();
+                this.renderFavorites();
+                alert('Saved to Favorites!');
+            },
+
+            renderFavorites() {
+                const list = document.getElementById('fav-list');
+                const empty = document.getElementById('no-favs');
+                list.innerHTML = '';
+
+                if (this.data.favorites.length === 0) {
+                    empty.style.display = 'block';
+                    document.getElementById('fav-section').classList.add('hidden');
+                } else {
+                    empty.style.display = 'none';
+                    document.getElementById('fav-section').classList.remove('hidden');
+
+                    this.data.favorites.forEach(f => {
+                        const btn = document.createElement('button');
+                        btn.className = 'btn btn-secondary';
+                        btn.style.fontSize = '0.8rem';
+                        btn.style.padding = '0.5rem';
+                        btn.style.width = 'auto';
+                        btn.innerHTML = `<span>${f.name}</span> <i class="fa-solid fa-xmark" style="margin-left:6px; color:var(--text-muted);"></i>`;
+                        btn.onclick = (e) => {
+                            // If clicked x
+                            if (e.target.classList.contains('fa-xmark')) {
+                                e.stopPropagation();
+                                this.deleteFavorite(f.id);
+                            } else {
+                                this.loadFavorite(f);
+                            }
+                        };
+                        list.appendChild(btn);
+                    });
+                }
+            },
+
+            deleteFavorite(id) {
+                if (!confirm('Delete favorite?')) return;
+                this.data.favorites = this.data.favorites.filter(f => f.id !== id);
+                this.save();
+                this.renderFavorites();
+            },
+
+            loadFavorite(f) {
+                document.getElementById('m-name').value = f.name;
+                document.getElementById('m-cals').value = f.cals;
+                document.getElementById('m-pro').value = f.pro;
+                document.getElementById('m-carb').value = f.carb;
+                document.getElementById('m-fat').value = f.fat;
+
+                // Switch to text mode logic to show manual entry
+                this.trackMode('text');
+                document.getElementById('input-text-area').style.display = 'none'; // Keep it clean, just show results
             },
 
             // --- SETTINGS ---
@@ -1407,6 +1540,27 @@
 
             bindInputs() {
                 // Attach real-time listeners if needed
+
+                // Generate Manifest dynamically
+                const manifest = {
+                    "name": "AI ZigZag",
+                    "short_name": "ZigZag",
+                    "start_url": ".",
+                    "display": "standalone",
+                    "background_color": "#0f172a",
+                    "theme_color": "#0f172a",
+                    "icons": [
+                        {
+                            "src": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/sprites/solid.svg",
+                            "sizes": "512x512",
+                            "type": "image/svg+xml"
+                        }
+                    ]
+                };
+                const stringManifest = JSON.stringify(manifest);
+                const blob = new Blob([stringManifest], { type: 'application/json' });
+                const manifestURL = URL.createObjectURL(blob);
+                document.getElementById('manifest-placeholder').setAttribute('href', manifestURL);
             }
         };
 
