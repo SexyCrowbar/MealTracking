@@ -10,7 +10,7 @@ This screen provides access to user profile editing, AI configuration, and other
     * **Action:** Navigate to the "User Info / Profile" screen to view or edit personal details.
 2.  **Google AI API Key:**
     * **Input Field:** Allows users to paste their personal Google AI API key to enable all AI features.
-    * **Model Selection (Optional):** Dropdown to select preferred Gemini model (e.g., "Gemini 2.5").
+    * **Model Selection:** Dropdown to select preferred Gemini model (e.g., "Gemini 2.5").
     * **Actions:** Buttons to "Save Key" and "Clear Key".
     * **Note:** Explains that AI features require a valid key and that usage incurs costs on the user's Google AI account.
 3.  **AI Display Preferences:**
