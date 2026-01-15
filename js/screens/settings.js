@@ -1,5 +1,8 @@
-import { getSettings, saveSettings, getUserProfile, saveUserProfile } from '../storage.js';
 import { testApiKey } from '../api.js';
+import { getUserProfile, saveUserProfile, getSettings, saveSettings } from '../storage.js';
+import { showToast } from '../ui.js';
+
+import { t, setLang, getLang } from '../translations.js';
 import { ACTIVITY_LEVELS } from '../utils.js';
 
 export function renderSettingsScreen() {
@@ -10,22 +13,34 @@ export function renderSettingsScreen() {
     const profile = getUserProfile() || {
         age: 30, gender: 'male', height: 175, weight: 80, goalWeight: 75, activity: 'sedentary'
     };
+    const currentLang = getLang();
 
     container.innerHTML = `
         <div class="screen-header">
-            <h1 class="screen-title">Settings</h1>
+            <h1 class="screen-title">${t('screen_title_settings')}</h1>
+        </div>
+        
+        <!-- Language Section -->
+         <div class="card">
+            <div class="form-group">
+                <label class="form-label">${t('language')}</label>
+                <select id="langSelect" class="form-select">
+                    <option value="en" ${currentLang === 'en' ? 'selected' : ''}>English</option>
+                    <option value="uk" ${currentLang === 'uk' ? 'selected' : ''}>Українська</option>
+                </select>
+            </div>
         </div>
         
         <!-- API Section -->
         <div class="card api-key-section">
-            <h3 style="margin-bottom:10px;">🤖 AI Configuration</h3>
+            <h3 style="margin-bottom:10px;">${t('ai_config')}</h3>
             <div class="form-group">
-                <label class="form-label">Gemini API Key</label>
+                <label class="form-label">${t('gemini_api_key')}</label>
                 <input type="password" id="apiKey" class="form-input" value="${settings.apiKey || ''}" placeholder="Paste your API key here">
             </div>
             
              <div class="form-group">
-                <label class="form-label">Model</label>
+                <label class="form-label">${t('model')}</label>
                 <select id="geminiModel" class="form-select">
                     <option value="gemini-3-flash-preview" ${settings.geminiModel === 'gemini-3-flash-preview' ? 'selected' : ''}>Gemini 3 Flash (Preview)</option>
                     <option value="gemini-3-pro-preview" ${settings.geminiModel === 'gemini-3-pro-preview' ? 'selected' : ''}>Gemini 3 Pro (Preview)</option>
@@ -37,40 +52,40 @@ export function renderSettingsScreen() {
                 </select>
             </div>
 
-            <button id="btnTestKey" class="btn btn-secondary" style="width:100%">Test Key</button>
+            <button id="btnTestKey" class="btn btn-secondary" style="width:100%">${t('test_key')}</button>
         </div>
 
         <!-- Profile Section -->
         <div class="card">
-            <h3 style="margin-bottom:10px;">👤 User Profile</h3>
+            <h3 style="margin-bottom:10px;">${t('user_profile')}</h3>
             <div class="form-group">
-                <label class="form-label">Age</label>
+                <label class="form-label">${t('age')}</label>
                 <input type="number" id="pAge" class="form-input" value="${profile.age}">
             </div>
             <div class="form-group">
-                <label class="form-label">Gender</label>
+                <label class="form-label">${t('gender')}</label>
                 <select id="pGender" class="form-select">
                     <option value="male" ${profile.gender === 'male' ? 'selected' : ''}>Male</option>
                     <option value="female" ${profile.gender === 'female' ? 'selected' : ''}>Female</option>
                 </select>
             </div>
             <div class="form-group">
-                <label class="form-label">Height (cm)</label>
+                <label class="form-label">${t('height')}</label>
                 <input type="number" id="pHeight" class="form-input" value="${profile.height}">
             </div>
              <div class="form-group">
-                <label class="form-label">Current Weight (kg)</label>
+                <label class="form-label">${t('weight')}</label>
                 <input type="number" id="pWeight" class="form-input" value="${profile.weight}">
             </div>
              <div class="form-group">
-                <label class="form-label">Goal Weight (kg)</label>
+                <label class="form-label">${t('goal_weight')}</label>
                 <input type="number" id="pGoalWeight" class="form-input" value="${profile.goalWeight}">
             </div>
             <div class="form-group">
-                <label class="form-label">Activity Level</label>
+                <label class="form-label">${t('activity_level')}</label>
                 <select id="pActivity" class="form-select">
                     ${Object.keys(ACTIVITY_LEVELS).map(k =>
-        `<option value="${k}" ${profile.activity === k ? 'selected' : ''}>${k.charAt(0).toUpperCase() + k.slice(1)}</option>`
+        `<option value="${k}" ${profile.activity === k ? 'selected' : ''}>${t(k)}</option>`
     ).join('')}
                 </select>
             </div>
@@ -78,27 +93,27 @@ export function renderSettingsScreen() {
 
         <!-- Preferences -->
         <div class="card">
-            <h3 style="margin-bottom:10px;">⚙️ Preferences</h3>
+            <h3 style="margin-bottom:10px;">${t('preferences')}</h3>
             <div class="toggle-switch">
-                <span>Show Macros</span>
+                <span>${t('show_macros')}</span>
                 <input type="checkbox" id="showMacros" class="toggle-input" ${settings.showMacros ? 'checked' : ''}>
             </div>
             <div class="toggle-switch">
-                <span>Show Glycemic Index</span>
+                <span>${t('show_gi')}</span>
                 <input type="checkbox" id="showGI" class="toggle-input" ${settings.showGI ? 'checked' : ''}>
             </div>
              <div class="toggle-switch">
-                <span>Diabetic Mode</span>
+                <span>${t('diabetic_mode')}</span>
                 <input type="checkbox" id="diabeticMode" class="toggle-input" ${settings.diabeticMode ? 'checked' : ''}>
             </div>
             
             <div class="form-group" style="margin-top:10px;">
-                <label class="form-label">Allergens (comma separated)</label>
+                <label class="form-label">${t('allergens')}</label>
                 <input type="text" id="allergens" class="form-input" value="${settings.allergens}" placeholder="e.g. Peanuts, Gluten">
             </div>
         </div>
 
-        <button id="btnSave" class="btn" style="width:100%; margin-bottom:20px;">Save Settings</button>
+        <button id="btnSave" class="btn" style="width:100%; margin-bottom:20px;">${t('save_settings')}</button>
     `;
 
     // Event Listeners
@@ -107,10 +122,10 @@ export function renderSettingsScreen() {
         const key = container.querySelector('#apiKey').value;
         const model = container.querySelector('#geminiModel').value;
 
-        btn.textContent = 'Testing...';
+        btn.textContent = t('testing');
         const success = await testApiKey(key, model);
-        btn.textContent = success ? '✅ Success!' : '❌ Failed';
-        setTimeout(() => btn.textContent = 'Test Key', 3000);
+        btn.textContent = success ? t('success') : t('failed');
+        setTimeout(() => btn.textContent = t('test_key'), 3000);
     });
 
     container.querySelector('#btnSave').addEventListener('click', () => {
@@ -136,7 +151,15 @@ export function renderSettingsScreen() {
         };
         saveUserProfile(newProfile);
 
-        alert('Settings Saved!');
+        const newLang = container.querySelector('#langSelect').value;
+        if (newLang !== currentLang) {
+            setLang(newLang);
+            // Reload page to apply language changes cleanly across all modules
+            location.reload();
+            return;
+        }
+
+        showToast(t('settings_saved'), 'success');
     });
 
     return container;

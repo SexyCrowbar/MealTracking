@@ -1,5 +1,8 @@
+
 import { calculateBMR, calculateTDEE, calculateZigZagPlan, getDayType } from '../utils.js';
 import { getUserProfile, getSettings } from '../storage.js';
+import { showToast, showConfirm } from '../ui.js';
+import { t } from '../translations.js';
 
 export function renderPlanScreen() {
     const container = document.createElement('div');
@@ -13,12 +16,12 @@ export function renderPlanScreen() {
     // Check if profile exists
     if (!profile) {
         container.innerHTML = `
-            <div class="screen-header"><h1 class="screen-title">Start Your Journey</h1></div>
-            <div class="card" style="text-align:center; padding:40px;">
-                <p style="margin-bottom:20px; color:var(--text-muted)">Please set up your profile to generate your plan.</p>
-                <a href="#settings" class="btn">Setup Profile</a>
-            </div>
-        `;
+    <div class="screen-header"><h1 class="screen-title">${t('screen_title_start')}</h1></div>
+        <div class="card" style="text-align:center; padding:40px;">
+            <p style="margin-bottom:20px; color:var(--text-muted)">${t('setup_profile_msg')}</p>
+            <a href="#settings" class="btn">${t('setup_profile_btn')}</a>
+        </div>
+`;
         return container;
     }
 
@@ -51,15 +54,15 @@ export function renderPlanScreen() {
     const progressPercent = Math.min((consumed.cals / dailyTarget) * 100, 100);
 
     container.innerHTML = `
-        <div class="screen-header">
-            <h1 class="screen-title">Today's Plan</h1>
+    <div class="screen-header">
+            <h1 class="screen-title">${t('screen_title_plan')}</h1>
             <p style="color:var(--text-muted); font-size:0.9rem;">
                 ${new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })} 
-                • <span style="color:${dayType === 'high' ? 'var(--accent-red)' : 'var(--primary)'}">${dayType.toUpperCase()} DAY</span>
+                • <span style="color:${dayType === 'high' ? 'var(--accent-red)' : 'var(--primary)'}">${t(dayType === 'high' ? 'high_day' : 'low_day')}</span>
             </p>
         </div>
 
-        <!-- Calories Ring -->
+        <!--Calories Ring-->
         <div class="card" style="text-align:center; display:flex; flex-direction:column; align-items:center;">
             <div style="position:relative; width:200px; height:200px; display:flex; align-items:center; justify-content:center;">
                 <svg width="200" height="200" style="transform: rotate(-90deg);">
@@ -71,68 +74,75 @@ export function renderPlanScreen() {
                 </svg>
                 <div style="position:absolute; text-align:center;">
                     <div style="font-size:2.5rem; font-weight:700;">${Math.round(remaining)}</div>
-                    <div style="color:var(--text-muted); font-size:0.9rem;">Kcal Remaining</div>
-                    <div style="color:var(--text-muted); font-size:0.8rem; margin-top:5px;">Target: ${dailyTarget}</div>
+                    <div style="color:var(--text-muted); font-size:0.9rem;">${t('kcal_remaining')}</div>
+                    <div style="color:var(--text-muted); font-size:0.8rem; margin-top:5px;">${t('target')}: ${dailyTarget}</div>
                 </div>
             </div>
         </div>
 
-        <!-- Macros (If Enabled) -->
-        ${settings.showMacros ? `
+        <!--Macros(If Enabled) -->
+    ${settings.showMacros ? `
         <div class="card">
-            <h3 style="margin-bottom:15px;">Macronutrients</h3>
+            <h3 style="margin-bottom:15px;">${t('macros')}</h3>
             <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; text-align:center;">
                 <div>
-                    <div style="color:var(--text-muted); font-size:0.8rem;">Protein</div>
+                    <div style="color:var(--text-muted); font-size:0.8rem;">${t('protein')}</div>
                     <div style="font-size:1.2rem; font-weight:600;">${consumed.prot}g</div>
                 </div>
                 <div>
-                    <div style="color:var(--text-muted); font-size:0.8rem;">Carbs</div>
+                    <div style="color:var(--text-muted); font-size:0.8rem;">${t('carbs')}</div>
                     <div style="font-size:1.2rem; font-weight:600;">${consumed.carbs}g</div>
                 </div>
                  <div>
-                    <div style="color:var(--text-muted); font-size:0.8rem;">Fat</div>
+                    <div style="color:var(--text-muted); font-size:0.8rem;">${t('fat')}</div>
                     <div style="font-size:1.2rem; font-weight:600;">${consumed.fat}g</div>
                 </div>
             </div>
         </div>
-        ` : ''}
+    ` : ''}
 
-        <!-- Diabetic Info (If Enabled) -->
-        ${settings.diabeticMode && settings.showMacros ? `
+        <!--Diabetic Info(If Enabled)-->
+    ${settings.diabeticMode && settings.showMacros ? `
         <div class="card" style="border-left: 4px solid var(--accent-blue);">
-            <h3 style="margin-bottom:5px;">Diabetic Insights</h3>
+            <h3 style="margin-bottom:5px;">${t('diabetic_insights')}</h3>
             <p style="color:var(--text-muted); font-size:0.9rem;">
-                Estimated Insulin for Today (based on intake): 
-                <strong>${settings.insulinRatio ? (consumed.carbs / settings.insulinRatio).toFixed(1) : '?'} units</strong>
+                ${t('estimated_insulin')} 
+                <strong>${settings.insulinRatio ? (consumed.carbs / settings.insulinRatio).toFixed(1) : '?'} ${t('units')}</strong>
             </p>
         </div>
-        ` : ''}
+    ` : ''}
 
-        <!-- Recent Logs -->
-        <h3 style="margin:20px 0 10px 0;">Today's Meals</h3>
-        ${todayLogs.length === 0 ? '<p style="color:var(--text-muted); text-align:center;">No meals logged yet.</p>' : ''}
+        <!--Recent Logs-->
+    <h3 style="margin:20px 0 10px 0;">${t('todays_meals')}</h3>
+        ${todayLogs.length === 0 ? `<p style="color:var(--text-muted); text-align:center;">${t('no_meals_logged')}</p>` : ''}
         ${todayLogs.map(log => `
             <div class="card" style="padding: 10px 15px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                 <div>
                     <div style="font-weight:600;">${log.name}</div>
                     <div style="color:var(--text-muted); font-size:0.8rem;">${log.calories} kcal</div>
                 </div>
-                <button class="btn btn-secondary" style="padding:5px 10px; font-size:0.8rem;" onclick="deleteLog(${log.id})">❌</button>
+                <button class="btn btn-secondary delete-log-btn" data-id="${log.id}" style="padding:5px 10px; font-size:0.8rem;">❌</button>
             </div>
         `).join('')}
-    `;
+`;
 
-    // Hacky delete function binding
-    window.deleteLog = (id) => {
-        if (confirm('Delete this entry?')) {
-            const newLogs = logs.filter(l => l.id !== id);
-            localStorage.setItem('meal_tracker_logs', JSON.stringify(newLogs));
-            // Re-render
-            const newScreen = renderPlanScreen();
-            container.innerHTML = newScreen.innerHTML;
-        }
-    };
+    // Attach event listeners for delete buttons
+    container.querySelectorAll('.delete-log-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const id = parseInt(e.target.dataset.id);
+            showConfirm(t('confirm_delete_entry'), () => {
+                let currentLogs = JSON.parse(localStorage.getItem('meal_tracker_logs') || '[]');
+                currentLogs = currentLogs.filter(l => l.id !== id);
+                localStorage.setItem('meal_tracker_logs', JSON.stringify(currentLogs));
+
+                // Refresh the screen
+                const app = document.getElementById('app');
+                app.innerHTML = ''; // Clear current content
+                app.appendChild(renderPlanScreen()); // Re-render the entire screen
+                showToast(t('entry_deleted'));
+            });
+        });
+    });
 
     return container;
 }

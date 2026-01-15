@@ -1,61 +1,72 @@
 import { getUserProfile, saveUserProfile, getSettings } from '../storage.js';
 import { calculateBMR, calculateTDEE, calculateZigZagPlan, getDayType } from '../utils.js';
+import { showToast, showConfirm } from '../ui.js';
+import { t } from '../translations.js';
 
 export function renderProgressScreen() {
     const container = document.createElement('div');
     container.className = 'screen-container fade-in';
     const profile = getUserProfile();
     const settings = getSettings();
+    const history = JSON.parse(localStorage.getItem('meal_tracker_weight') || '[]');
 
     container.innerHTML = `
-        <div class="screen-header">
-            <h1 class="screen-title">Progress & History</h1>
-        </div>
+        <div class="screen-header"><h1 class="screen-title">${t('screen_title_progress')}</h1></div>
 
-        <!-- Weigh-In Section -->
+        <!-- Weight Update -->
         <div class="card">
-            <h3 style="margin-bottom:10px;">⚖️ Weigh-In</h3>
-            <div style="display:flex; gap:10px; align-items:end;">
-                <div class="form-group" style="flex:1; margin-bottom:0;">
-                    <label class="form-label">Current Weight (kg)</label>
-                    <input type="number" id="newWeight" class="form-input" value="${profile ? profile.weight : ''}">
-                </div>
-                <button id="btnUpdateWeight" class="btn">Update</button>
+            <h3 style="margin-bottom:15px;">${t('current_weight')}</h3>
+            <div style="display:flex; gap:10px;">
+                <input type="number" id="weightInput" class="form-input" value="${profile ? profile.weight : ''}" placeholder="kg">
+                <button id="btnUpdateWeight" class="btn">${t('update_weight_btn')}</button>
+            </div>
+            <div style="margin-top:10px; color:var(--text-muted); font-size:0.9rem;">
+                ${t('calculate_bmi')}: <strong style="color:var(--primary)">${profile ? (profile.weight / ((profile.height / 100) ** 2)).toFixed(1) : 'N/A'}</strong>
             </div>
         </div>
 
-        <!-- Adherence Chart -->
+         <!-- Calorie Adherence Chart -->
         <div class="card">
-            <h3 style="margin-bottom:20px;">Calorie Adherence (Last 30 Days)</h3>
-            <div id="adherenceChart" class="chart-container" style="display:flex; align-items:flex-end; gap:4px; height:200px; padding-bottom:20px; border-bottom:1px solid var(--border); overflow-x:auto;">
-                <!-- Chart bars injected here -->
-            </div>
-             <div style="display:flex; align-items:center; justify-content:center; gap:15px; margin-top:10px; font-size:0.8rem;">
-                <div style="display:flex; align-items:center; gap:5px;"><div style="width:10px; height:10px; background:var(--primary);"></div> Consumed</div>
-                <div style="display:flex; align-items:center; gap:5px;"><div style="width:10px; height:10px; background:var(--text-muted); opacity:0.3;"></div> Target</div>
+            <h3 style="margin-bottom:15px;">${t('adherence_chart')}</h3>
+            <div id="adherenceChart" style="width:100%; height:200px; display:flex; align-items:flex-end; gap:5px; position:relative;">
+                <!-- Chart rendered via JS -->
             </div>
         </div>
 
-        <!-- History List -->
-         <div class="card">
-            <h3 style="margin-bottom:20px;">📜 Meal History</h3>
-            <div id="historyList">
-                <!-- History items injected here -->
+        <!-- Weight History Chart -->
+        <div class="card">
+            <h3 style="margin-bottom:15px;">${t('weight_history')}</h3>
+             <div id="weightChart" style="width:100%; height:150px; display:flex; align-items:flex-end; gap:5px;">
+                <!-- Simple CSS Bar Chart -->
+                ${history.slice(-7).map(h => `
+                    <div style="flex:1; background: var(--bg-input); border-radius:4px; position:relative; overflow:hidden;">
+                        <div style="position:absolute; bottom:0; left:0; right:0; top:${100 - (h.weight / 150) * 100}%; background:var(--primary); opacity:0.6;"></div>
+                         <div style="position:absolute; bottom:5px; width:100%; text-align:center; font-size:0.7rem;">${h.weight}</div>
+                    </div>
+                `).join('')}
             </div>
+        </div>
+
+        <!-- Meal History List -->
+        <div class="card" style="margin-top:20px;">
+             <h3 style="margin-bottom:10px;">${t('meal_history')}</h3>
+             <div id="mealHistoryList">
+                <!-- Populated via JS -->
+             </div>
         </div>
     `;
 
     // Initialize Logic
     setupWeighIn(container, profile);
     renderAdherenceChart(container.querySelector('#adherenceChart'), profile);
-    renderHistoryList(container.querySelector('#historyList'), container);
+    renderHistoryList(container.querySelector('#mealHistoryList'), container);
 
     return container;
 }
 
 function setupWeighIn(container, profile) {
     container.querySelector('#btnUpdateWeight').addEventListener('click', () => {
-        const newW = parseFloat(container.querySelector('#newWeight').value);
+        const newW = parseFloat(container.querySelector('#weightInput').value);
         if (!newW || isNaN(newW)) return;
 
         if (profile) {
@@ -66,7 +77,7 @@ function setupWeighIn(container, profile) {
             history.push({ date: new Date().toISOString(), weight: newW });
             localStorage.setItem('meal_tracker_weight', JSON.stringify(history));
 
-            alert('Weight Updated!');
+            showToast(t('weight_updated'));
         }
     });
 }
@@ -145,21 +156,20 @@ function renderAdherenceChart(chartContainer, profile) {
             <!-- Data Points -->
             ${points}
         </svg>
+        <div style="display:flex; align-items:center; justify-content:center; gap:15px; margin-top:10px; font-size:0.8rem; position:absolute; bottom:0; left:0; right:0;">
+            <div style="display:flex; align-items:center; gap:5px;"><div style="width:10px; height:10px; background:var(--primary);"></div> Consumed</div>
+            <div style="display:flex; align-items:center; gap:5px;"><div style="width:10px; height:10px; background:var(--text-muted); opacity:0.3;"></div> Target</div>
+        </div>
     `;
 
     // Remove flex styles from container as SVG handles layout
-    chartContainer.style.display = 'block';
-    chartContainer.style.overflowX = 'hidden'; // SVG handles scaling
+    // chartContainer.style.display = 'block'; // This was removed as per instruction
+    // chartContainer.style.overflowX = 'hidden'; // This was removed as per instruction
 }
 
 function renderHistoryList(listContainer, parentContainer) {
     const logs = JSON.parse(localStorage.getItem('meal_tracker_logs') || '[]');
     logs.sort((a, b) => new Date(b.date) - new Date(a.date)); // Newest first
-
-    if (logs.length === 0) {
-        listContainer.innerHTML = '<p style="color:var(--text-muted); text-align:center;">No history.</p>';
-        return;
-    }
 
     // Group by Date
     const grouped = {};
@@ -168,6 +178,11 @@ function renderHistoryList(listContainer, parentContainer) {
         if (!grouped[d]) grouped[d] = [];
         grouped[d].push(log);
     });
+
+    if (Object.keys(grouped).length === 0) {
+        listContainer.innerHTML = `<p style="color:var(--text-muted); text-align:center;">${t('no_history')}</p>`;
+        return;
+    }
 
     listContainer.innerHTML = Object.keys(grouped).map(date => `
         <details class="history-group" open style="margin-bottom:15px;">
@@ -195,14 +210,15 @@ function renderHistoryList(listContainer, parentContainer) {
     // Attach Event Listeners
     listContainer.querySelectorAll('.btn-del').forEach(btn => {
         btn.addEventListener('click', (e) => {
-            if (confirm('Delete this meal?')) {
+            showConfirm(t('confirm_delete_meal'), () => {
                 const id = parseInt(e.target.dataset.id);
                 const newLogs = logs.filter(l => l.id !== id);
                 localStorage.setItem('meal_tracker_logs', JSON.stringify(newLogs));
                 // Refresh
                 renderHistoryList(listContainer, parentContainer);
-                renderAdherenceChart(parentContainer.querySelector('#adherenceChart'), getUserProfile()); // Refresh chart too
-            }
+                renderAdherenceChart(parentContainer.querySelector('#adherenceChart'), getUserProfile());
+                showToast(t('meal_deleted'));
+            });
         });
     });
 
