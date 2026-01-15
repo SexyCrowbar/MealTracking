@@ -1,0 +1,52 @@
+/* Screen Specific Styles */
+
+/* Screen Header */
+.screen-header {
+    margin-bottom: var(--space-lg);
+}
+
+.screen-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+/* Plan Screen */
+.progress-rings {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+/* Record Screen */
+.ai-input-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.image-preview {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    display: none;
+}
+
+.image-preview.visible {
+    display: block;
+}
+
+/* Progress Screen */
+.chart-container {
+    height: 300px;
+    width: 100%;
+}
+
+/* Settings Screen */
+.api-key-section {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+}

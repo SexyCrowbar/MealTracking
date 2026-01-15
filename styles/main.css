@@ -1,0 +1,118 @@
+:root {
+    /* Colors - Dark Theme HSL */
+    --primary-hue: 145; /* Greenish */
+    --primary: hsl(var(--primary-hue), 65%, 45%);
+    --primary-content: hsl(var(--primary-hue), 80%, 96%);
+    
+    --bg-base: hsl(220, 15%, 12%);
+    --bg-card: hsl(220, 15%, 16%);
+    --bg-input: hsl(220, 15%, 20%);
+    
+    --text-main: hsl(220, 10%, 95%);
+    --text-muted: hsl(220, 10%, 70%);
+    
+    --border: hsl(220, 15%, 25%);
+    
+    --accent-red: hsl(0, 70%, 60%);
+    --accent-blue: hsl(210, 70%, 60%);
+    
+    /* Spacing */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    
+    /* Radius */
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 18px;
+    
+    /* Typography */
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-base);
+    color: var(--text-main);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    height: 100vh;
+    overflow: hidden; /* App-like feel */
+    display: flex;
+    flex-direction: column;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-width: 600px; /* Mobile-view constraint on desktop */
+    margin: 0 auto;
+    background-color: var(--bg-card);
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    position: relative;
+    width: 100%;
+}
+
+#main-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--space-md);
+    padding-bottom: 80px; /* Space for nav */
+}
+
+/* Navigation */
+#bottom-nav {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background-color: var(--bg-card);
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    padding: var(--space-xs);
+    transition: color 0.2s;
+}
+
+.nav-item.active {
+    color: var(--primary);
+}
+
+.nav-item .icon {
+    font-size: 1.25rem;
+    margin-bottom: 2px;
+}
+
+/* Utilities */
+.hidden { display: none !important; }
+.fade-in { animation: fadeIn 0.3s ease-out; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+input, select, textarea, button {
+    font-family: inherit;
+    font-size: 1rem;
+}
