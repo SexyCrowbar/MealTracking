@@ -25,7 +25,10 @@ export function renderRecordScreen() {
                     </label>
                 </div>
                 
-                <img id="previewImg" class="image-preview" alt="Preview">
+                <div style="position:relative; display:inline-block;">
+                    <img id="previewImg" class="image-preview" alt="Preview">
+                    <button id="btnRemoveImg" class="btn btn-secondary" style="position:absolute; top:5px; right:5px; padding:5px; display:none;">❌</button>
+                </div>
                 
                 <button id="btnAnalyze" class="btn" style="width:100%">
                     🔮 Analyze
@@ -83,9 +86,19 @@ export function renderRecordScreen() {
                 currentImageBase64 = evt.target.result;
                 preview.src = currentImageBase64;
                 preview.classList.add('visible');
+                container.querySelector('#btnRemoveImg').style.display = 'block';
             };
             reader.readAsDataURL(file);
         }
+    });
+
+    // Remove Image
+    container.querySelector('#btnRemoveImg').addEventListener('click', () => {
+        currentImageBase64 = null;
+        preview.src = '';
+        preview.classList.remove('visible');
+        container.querySelector('#btnRemoveImg').style.display = 'none';
+        imgInput.value = ''; // Reset input
     });
 
     // Analyze

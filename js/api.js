@@ -59,7 +59,7 @@ export async function analyzeMeal(text, imageBase64) {
             body: JSON.stringify(payload)
         });
 
-        if (!response.ok) throw new Error(\`Gemini API Error: \${response.statusText}\`);
+        if (!response.ok) throw new Error(`Gemini API Error: ${response.statusText}`);
         data = await response.json();
     } catch (e) {
         console.error("API Call Failed", e);
@@ -67,11 +67,11 @@ export async function analyzeMeal(text, imageBase64) {
     }
 
     if (!data.candidates || !data.candidates[0].content) {
-         throw new Error("No response from AI");
+        throw new Error("No response from AI");
     }
 
     // Parse JSON from markdown code block if necessary
     let resultText = data.candidates[0].content.parts[0].text;
-    resultText = resultText.replace(/```json / g, '').replace(/```/g, '').trim();
-        return JSON.parse(resultText);
-    }
+    resultText = resultText.replace(/```json/g, '').replace(/```/g, '').trim();
+    return JSON.parse(resultText);
+}
