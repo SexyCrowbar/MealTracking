@@ -157,7 +157,7 @@ export function renderRecordScreen() {
             date: new Date().toISOString(),
             name: container.querySelector('#foodName').value,
             calories: parseInt(container.querySelector('#calories').value) || 0,
-            protein: parseInt(container.querySelector('#protein').value) || 0,
+            protein: parseInt(container.querySelector('#prot').value) || 0,
             carbs: parseInt(container.querySelector('#carbs').value) || 0,
             fat: parseInt(container.querySelector('#fat').value) || 0,
         };
