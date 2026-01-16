@@ -43,6 +43,7 @@ export const translations = {
         add_meal_btn: "Add Meal",
         remove_photo: "Remove Photo",
         allergen_warning: "⚠️ Allergen Warning: This meal may contain ",
+        estimated_insulin_meal: "Est. Insulin:",
 
         // Progress
         current_weight: "Current Weight",
@@ -141,6 +142,7 @@ export const translations = {
         add_meal_btn: "Додати їжу",
         remove_photo: "Видалити фото",
         allergen_warning: "⚠️ Попередження про алерген: Ця страва може містити ",
+        estimated_insulin_meal: "Орієнт. інсулін:",
 
         // Progress
         current_weight: "Поточна вага",

@@ -74,6 +74,15 @@ export function renderRecordScreen() {
             </div>
             ` : ''}
 
+            ${settings.diabeticMode ? `
+             <div class="form-group" style="padding:10px; background-color:var(--bg-secondary); border-radius:var(--radius-sm); border:1px solid var(--accent-blue);">
+                <label class="form-label" style="color:var(--accent-blue);">${t('estimated_insulin_meal')}</label>
+                <div style="font-size:1.2rem; font-weight:700;">
+                    <span id="estInsulin">0</span> ${t('units')}
+                </div>
+            </div>
+            ` : ''}
+
             <!-- Allergen Warning Container -->
             <div id="allergenWarning" class="card warning" style="display:none; background-color: rgba(255, 77, 77, 0.1); border: 1px solid var(--accent-red); color: var(--accent-red);">
                 
@@ -135,6 +144,9 @@ export function renderRecordScreen() {
                 container.querySelector('#gi').value = result.gi || 0;
             }
 
+            // Update Insulin
+            if (typeof updateInsulin === 'function') updateInsulin(); // Function defined in same scope below, hoisting check or move logic
+
             // Warnings
             if (result.allergen_warning) {
                 const warnBox = container.querySelector('#allergenWarning');
@@ -149,6 +161,22 @@ export function renderRecordScreen() {
             btnAnalyze.disabled = false;
         }
     });
+
+    // Helper to update insulin
+    function updateInsulin() {
+        if (!settings.diabeticMode || !settings.insulinRatio) return;
+        const carbs = parseInt(container.querySelector('#carbs').value) || 0;
+        const units = (carbs / settings.insulinRatio).toFixed(1);
+        const display = container.querySelector('#estInsulin');
+        if (display) display.textContent = units;
+    }
+
+    container.querySelector('#carbs').addEventListener('input', updateInsulin);
+
+    // AI Analysis Success
+    // ... inside btnAnalyze click handler, after populating fields ...
+    // Note: We need to insert this logic carefully so we don't break existing code.
+    // Instead of replacing the whole block, let's just observe changes or call it manually.
 
     // Add Log
     container.querySelector('#btnAdd').addEventListener('click', () => {

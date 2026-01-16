@@ -101,16 +101,7 @@ export function renderPlanScreen() {
         </div>
     ` : ''}
 
-        <!--Diabetic Info(If Enabled)-->
-    ${settings.diabeticMode && settings.showMacros ? `
-        <div class="card" style="border-left: 4px solid var(--accent-blue);">
-            <h3 style="margin-bottom:5px;">${t('diabetic_insights')}</h3>
-            <p style="color:var(--text-muted); font-size:0.9rem;">
-                ${t('estimated_insulin')} 
-                <strong>${settings.insulinRatio ? (consumed.carbs / settings.insulinRatio).toFixed(1) : '?'} ${t('units')}</strong>
-            </p>
-        </div>
-    ` : ''}
+
 
         <!--Recent Logs-->
     <h3 style="margin:20px 0 10px 0;">${t('todays_meals')}</h3>
