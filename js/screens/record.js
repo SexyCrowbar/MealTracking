@@ -104,7 +104,7 @@ export function renderRecordScreen() {
 
     // Remove Image
     container.querySelector('#btnRemovePhoto').addEventListener('click', () => {
-        currentImageBase66 = null;
+        currentImageBase64 = null;
         preview.src = '';
         previewContainer.style.display = 'none';
         imgInput.value = ''; // Reset input

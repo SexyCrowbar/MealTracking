@@ -44,7 +44,7 @@ export async function analyzeMeal(text, imageBase64) {
     }
 
     // Prompt engineering
-    const prompt = `Analyze this meal. Return JSON only: { "name": string, "calories": number, "protein": number, "carbs": number, "fat": number, "gi_estimate": number, "health_score": number (1-10) }. If allergens (${settings.allergens}) are detected, add "allergen_warning": string.`;
+    const prompt = `Analyze this meal. Return JSON only: { "name": string, "calories": number, "protein": number, "carbs": number, "fat": number, "gi": number, "health_score": number (1-10) }. If allergens (${settings.allergens}) are detected, add "allergen_warning": string.`;
     parts.push({ text: prompt });
 
     const payload = {

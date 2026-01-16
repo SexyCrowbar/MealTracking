@@ -107,6 +107,11 @@ export function renderSettingsScreen() {
                 <input type="checkbox" id="diabeticMode" class="toggle-input" ${settings.diabeticMode ? 'checked' : ''}>
             </div>
             
+            <div id="insulinRatioContainer" class="form-group" style="margin-top:10px; display:${settings.diabeticMode ? 'block' : 'none'};">
+                <label class="form-label">${t('insulin_ratio')}</label>
+                <input type="number" id="insulinRatio" class="form-input" value="${settings.insulinRatio || ''}" placeholder="e.g. 10">
+            </div>
+
             <div class="form-group" style="margin-top:10px;">
                 <label class="form-label">${t('allergens')}</label>
                 <input type="text" id="allergens" class="form-input" value="${settings.allergens}" placeholder="e.g. Peanuts, Gluten">
@@ -128,6 +133,12 @@ export function renderSettingsScreen() {
         setTimeout(() => btn.textContent = t('test_key'), 3000);
     });
 
+    // Toggle Diabetic Mode Input
+    container.querySelector('#diabeticMode').addEventListener('change', (e) => {
+        const inputContainer = container.querySelector('#insulinRatioContainer');
+        inputContainer.style.display = e.target.checked ? 'block' : 'none';
+    });
+
     container.querySelector('#btnSave').addEventListener('click', () => {
         // Save Settings
         const newSettings = {
@@ -136,6 +147,7 @@ export function renderSettingsScreen() {
             showMacros: container.querySelector('#showMacros').checked,
             showGI: container.querySelector('#showGI').checked,
             diabeticMode: container.querySelector('#diabeticMode').checked,
+            insulinRatio: parseFloat(container.querySelector('#insulinRatio').value) || 0,
             allergens: container.querySelector('#allergens').value
         };
         saveSettings(newSettings);
