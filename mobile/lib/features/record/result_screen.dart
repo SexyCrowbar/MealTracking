@@ -60,6 +60,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
     final a = widget.analysis;
+    final showGi = ref.watch(settingsStreamProvider).value?.showGi ?? false;
     return Scaffold(
       appBar: AppBar(title: Text(t.ai_analysis)),
       body: ListView(
@@ -131,12 +132,14 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
               ),
             ],
           ),
-          const SizedBox(height: AppSpace.sm),
-          TextField(
-            controller: _gi,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: t.glycemic_index),
-          ),
+          if (showGi) ...[
+            const SizedBox(height: AppSpace.sm),
+            TextField(
+              controller: _gi,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(labelText: t.glycemic_index),
+            ),
+          ],
           if (a.estimatedInsulin != null) ...[
             const SizedBox(height: AppSpace.md),
             Card(

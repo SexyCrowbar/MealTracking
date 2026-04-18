@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/constants.dart';
 import '../core/theme.dart';
 import '../domain/models/meal.dart';
+import '../domain/providers/app_providers.dart';
 import '../l10n/app_localizations.dart';
 
 Future<void> showMealDetailsSheet(BuildContext context, Meal meal) {
@@ -17,16 +19,20 @@ Future<void> showMealDetailsSheet(BuildContext context, Meal meal) {
   );
 }
 
-class _MealDetailsSheet extends StatelessWidget {
+class _MealDetailsSheet extends ConsumerWidget {
   const _MealDetailsSheet({required this.meal});
 
   final Meal meal;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final t = AppLocalizations.of(context);
+    final settings = ref.watch(settingsStreamProvider).value;
+    final showGi = settings?.showGi ?? false;
     final allergen = meal.allergenWarning?.trim();
     final showAllergen = allergen != null && allergen.isNotEmpty;
+    final hasGi = showGi && meal.glycemicIndex != null;
+    final hasInsulin = meal.estimatedInsulin != null;
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
@@ -115,22 +121,20 @@ class _MealDetailsSheet extends StatelessWidget {
                 ),
               ],
             ),
-            if (meal.glycemicIndex != null ||
-                meal.estimatedInsulin != null) ...[
+            if (hasGi || hasInsulin) ...[
               const SizedBox(height: AppSpace.sm),
               Row(
                 children: [
-                  if (meal.glycemicIndex != null)
+                  if (hasGi)
                     Expanded(
                       child: _InfoTile(
                         label: t.glycemic_index,
                         value: meal.glycemicIndex.toString(),
                       ),
                     ),
-                  if (meal.glycemicIndex != null &&
-                      meal.estimatedInsulin != null)
+                  if (hasGi && hasInsulin)
                     const SizedBox(width: AppSpace.sm),
-                  if (meal.estimatedInsulin != null)
+                  if (hasInsulin)
                     Expanded(
                       child: _InfoTile(
                         label: t.estimated_insulin_meal,

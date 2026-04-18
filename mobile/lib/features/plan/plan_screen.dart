@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -61,7 +62,6 @@ class PlanScreen extends ConsumerWidget {
         final progress = target == 0 ? 0.0 : (consumed / target);
 
         final settings = settingsAsync.value;
-        final showMacros = settings?.showMacros ?? false;
         final diabetic = settings?.diabeticMode ?? false;
         final ratio = settings?.insulinRatio ?? 0;
 
@@ -91,21 +91,6 @@ class PlanScreen extends ConsumerWidget {
               hasMeals: meals.isNotEmpty,
             ),
             const SizedBox(height: AppSpace.lg),
-            if (showMacros)
-              _MacrosCard(
-                title: t.macros,
-                proteinTarget: macros.proteinG,
-                carbsTarget: macros.carbsG,
-                fatTarget: macros.fatG,
-                consumedProtein:
-                    meals.fold<double>(0, (a, m) => a + (m.protein ?? 0)),
-                consumedCarbs:
-                    meals.fold<double>(0, (a, m) => a + (m.carbs ?? 0)),
-                consumedFat: meals.fold<double>(0, (a, m) => a + (m.fat ?? 0)),
-                proteinLabel: t.protein,
-                carbsLabel: t.carbs,
-                fatLabel: t.fat,
-              ),
             if (diabetic && ratio > 0)
               _DiabeticInsightsCard(
                 title: t.diabetic_insights,
@@ -259,7 +244,8 @@ class _FlippableProgressRing extends ConsumerStatefulWidget {
 
 class _FlippableProgressRingState
     extends ConsumerState<_FlippableProgressRing> {
-  bool _showMacros = false;
+  // 0 = calories ring, 1 = macro mini-rings, 2 = macro pie chart.
+  int _viewIndex = 0;
 
   Future<void> _markHintSeen(AppSettings? s) async {
     if (s == null || s.chartFlipHintShown) return;
@@ -268,9 +254,45 @@ class _FlippableProgressRingState
         .save(s.copyWith(chartFlipHintShown: true));
   }
 
-  Future<void> _toggle(AppSettings? s) async {
-    setState(() => _showMacros = !_showMacros);
+  Future<void> _cycle(AppSettings? s) async {
+    setState(() => _viewIndex = (_viewIndex + 1) % 3);
     await _markHintSeen(s);
+  }
+
+  Widget _faceFor(int index, AppLocalizations t) {
+    switch (index) {
+      case 1:
+        return _MacroRingsTrio(
+          key: const ValueKey(1),
+          protein: widget.consumedProtein,
+          carbs: widget.consumedCarbs,
+          fat: widget.consumedFat,
+          proteinTarget: widget.proteinTarget,
+          carbsTarget: widget.carbsTarget,
+          fatTarget: widget.fatTarget,
+          proteinLabel: t.protein,
+          carbsLabel: t.carbs,
+          fatLabel: t.fat,
+        );
+      case 2:
+        return _MacroPieChart(
+          key: const ValueKey(2),
+          protein: widget.consumedProtein,
+          carbs: widget.consumedCarbs,
+          fat: widget.consumedFat,
+          proteinLabel: t.protein,
+          carbsLabel: t.carbs,
+          fatLabel: t.fat,
+        );
+      default:
+        return ProgressRing(
+          key: const ValueKey(0),
+          progress: widget.calorieProgress,
+          centerLabel: '${widget.caloriesRemaining}',
+          subLabel: '/${widget.calorieTarget}',
+          subLabelFontSize: 14,
+        );
+    }
   }
 
   @override
@@ -294,7 +316,7 @@ class _FlippableProgressRingState
         Center(
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
-            onTap: () => _toggle(settings),
+            onTap: () => _cycle(settings),
             child: AnimatedSwitcher(
               duration: const Duration(milliseconds: 320),
               transitionBuilder: (child, animation) {
@@ -305,7 +327,7 @@ class _FlippableProgressRingState
                   child: child,
                   builder: (context, c) {
                     final isUnder =
-                        ValueKey(_showMacros) != child.key;
+                        ValueKey(_viewIndex) != child.key;
                     final tilt = (isUnder ? -1 : 1) * rotate.value * 3.1415926;
                     return Transform(
                       transform: Matrix4.identity()
@@ -317,26 +339,7 @@ class _FlippableProgressRingState
                   },
                 );
               },
-              child: _showMacros
-                  ? _MacroRingsTrio(
-                      key: const ValueKey(true),
-                      protein: widget.consumedProtein,
-                      carbs: widget.consumedCarbs,
-                      fat: widget.consumedFat,
-                      proteinTarget: widget.proteinTarget,
-                      carbsTarget: widget.carbsTarget,
-                      fatTarget: widget.fatTarget,
-                      proteinLabel: t.protein,
-                      carbsLabel: t.carbs,
-                      fatLabel: t.fat,
-                    )
-                  : ProgressRing(
-                      key: const ValueKey(false),
-                      progress: widget.calorieProgress,
-                      centerLabel: '${widget.caloriesRemaining}',
-                      subLabel:
-                          '${t.kcal_remaining} • ${t.target} ${widget.calorieTarget}',
-                    ),
+              child: _faceFor(_viewIndex, t),
             ),
           ),
         ),
@@ -429,7 +432,7 @@ class _MacroRingsTrio extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 280,
+      width: 340,
       height: 200,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -482,14 +485,181 @@ class _MiniRing extends StatelessWidget {
           progress: pct,
           centerLabel: '${consumed.round()}',
           subLabel: '/${target}g',
-          size: 80,
-          strokeWidth: 7,
+          size: 104,
+          strokeWidth: 8,
           color: color,
+          centerLabelFontSize: 22,
+          subLabelFontSize: 11,
         ),
-        const SizedBox(height: AppSpace.sm),
+        const SizedBox(height: AppSpace.md),
         Text(
           label,
-          style: const TextStyle(color: AppColors.textMuted, fontSize: 12),
+          style: const TextStyle(
+            color: AppColors.textMain,
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Pie chart showing today's macro split by calorie contribution
+/// (protein·4 + carbs·4 + fat·9). Third face of the flippable ring.
+class _MacroPieChart extends StatelessWidget {
+  const _MacroPieChart({
+    super.key,
+    required this.protein,
+    required this.carbs,
+    required this.fat,
+    required this.proteinLabel,
+    required this.carbsLabel,
+    required this.fatLabel,
+  });
+
+  final double protein;
+  final double carbs;
+  final double fat;
+  final String proteinLabel;
+  final String carbsLabel;
+  final String fatLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final pKcal = protein * 4;
+    final cKcal = carbs * 4;
+    final fKcal = fat * 9;
+    final total = pKcal + cKcal + fKcal;
+
+    if (total <= 0) {
+      return const SizedBox(
+        width: 340,
+        height: 200,
+        child: Center(
+          child: Text(
+            '—',
+            style: TextStyle(color: AppColors.textMuted, fontSize: 32),
+          ),
+        ),
+      );
+    }
+
+    final pPct = (pKcal / total * 100).round();
+    final cPct = (cKcal / total * 100).round();
+    final fPct = (fKcal / total * 100).round();
+
+    const sliceTitleStyle = TextStyle(
+      color: Colors.white,
+      fontWeight: FontWeight.w700,
+      fontSize: 13,
+    );
+
+    return SizedBox(
+      width: 340,
+      height: 200,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 170,
+            height: 170,
+            child: PieChart(
+              PieChartData(
+                sectionsSpace: 2,
+                centerSpaceRadius: 32,
+                sections: [
+                  PieChartSectionData(
+                    value: pKcal,
+                    color: AppColors.primary,
+                    radius: 48,
+                    title: '$pPct%',
+                    titleStyle: sliceTitleStyle,
+                  ),
+                  PieChartSectionData(
+                    value: cKcal,
+                    color: AppColors.accentOrange,
+                    radius: 48,
+                    title: '$cPct%',
+                    titleStyle: sliceTitleStyle,
+                  ),
+                  PieChartSectionData(
+                    value: fKcal,
+                    color: AppColors.accentRed,
+                    radius: 48,
+                    title: '$fPct%',
+                    titleStyle: sliceTitleStyle,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _PieLegendRow(
+                color: AppColors.primary,
+                label: proteinLabel,
+                value: '${protein.round()}g',
+              ),
+              const SizedBox(height: AppSpace.sm),
+              _PieLegendRow(
+                color: AppColors.accentOrange,
+                label: carbsLabel,
+                value: '${carbs.round()}g',
+              ),
+              const SizedBox(height: AppSpace.sm),
+              _PieLegendRow(
+                color: AppColors.accentRed,
+                label: fatLabel,
+                value: '${fat.round()}g',
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PieLegendRow extends StatelessWidget {
+  const _PieLegendRow({
+    required this.color,
+    required this.label,
+    required this.value,
+  });
+  final Color color;
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 10,
+          height: 10,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          label,
+          style: const TextStyle(
+            color: AppColors.textMain,
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(width: 6),
+        Text(
+          value,
+          style: const TextStyle(
+            color: Color(0xFFB8B8B8),
+            fontSize: 12,
+          ),
         ),
       ],
     );
@@ -551,105 +721,6 @@ class _DayHeader extends StatelessWidget {
       'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'
     ];
     return '${months[d.month - 1]} ${d.day}, ${d.year}';
-  }
-}
-
-class _MacrosCard extends StatelessWidget {
-  const _MacrosCard({
-    required this.title,
-    required this.proteinTarget,
-    required this.carbsTarget,
-    required this.fatTarget,
-    required this.consumedProtein,
-    required this.consumedCarbs,
-    required this.consumedFat,
-    required this.proteinLabel,
-    required this.carbsLabel,
-    required this.fatLabel,
-  });
-
-  final String title;
-  final int proteinTarget;
-  final int carbsTarget;
-  final int fatTarget;
-  final double consumedProtein;
-  final double consumedCarbs;
-  final double consumedFat;
-  final String proteinLabel;
-  final String carbsLabel;
-  final String fatLabel;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpace.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textMain,
-              ),
-            ),
-            const SizedBox(height: AppSpace.md),
-            Row(
-              children: [
-                Expanded(
-                    child: _MacroCell(
-                        label: proteinLabel,
-                        consumed: consumedProtein,
-                        target: proteinTarget)),
-                Expanded(
-                    child: _MacroCell(
-                        label: carbsLabel,
-                        consumed: consumedCarbs,
-                        target: carbsTarget)),
-                Expanded(
-                    child: _MacroCell(
-                        label: fatLabel,
-                        consumed: consumedFat,
-                        target: fatTarget)),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _MacroCell extends StatelessWidget {
-  const _MacroCell({
-    required this.label,
-    required this.consumed,
-    required this.target,
-  });
-
-  final String label;
-  final double consumed;
-  final int target;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(label,
-            style: const TextStyle(color: AppColors.textMuted, fontSize: 12)),
-        const SizedBox(height: 4),
-        Text(
-          '${consumed.round()}/${target}g',
-          style: const TextStyle(
-            color: AppColors.textMain,
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ],
-    );
   }
 }
 

@@ -13,6 +13,9 @@ class ProgressRing extends StatelessWidget {
     this.size = 200,
     this.strokeWidth = 14,
     this.color,
+    this.centerLabelFontSize = 36,
+    this.subLabelFontSize = 13,
+    this.subLabelColor = const Color(0xFFB8B8B8),
   });
 
   final double progress; // 0..1
@@ -21,10 +24,14 @@ class ProgressRing extends StatelessWidget {
   final double size;
   final double strokeWidth;
   final Color? color;
+  final double centerLabelFontSize;
+  final double subLabelFontSize;
+  final Color subLabelColor;
 
   @override
   Widget build(BuildContext context) {
     final c = color ?? AppColors.primary;
+    final hasSubLabel = subLabel.isNotEmpty;
     return SizedBox(
       width: size,
       height: size,
@@ -45,20 +52,22 @@ class ProgressRing extends StatelessWidget {
             children: [
               Text(
                 centerLabel,
-                style: const TextStyle(
-                  fontSize: 36,
+                style: TextStyle(
+                  fontSize: centerLabelFontSize,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textMain,
                 ),
               ),
-              const SizedBox(height: 2),
-              Text(
-                subLabel,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: AppColors.textMuted,
+              if (hasSubLabel) ...[
+                const SizedBox(height: 2),
+                Text(
+                  subLabel,
+                  style: TextStyle(
+                    fontSize: subLabelFontSize,
+                    color: subLabelColor,
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
         ],

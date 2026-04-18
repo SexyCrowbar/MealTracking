@@ -75,6 +75,7 @@ class _ManualEntryScreenState extends ConsumerState<ManualEntryScreen> {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
+    final showGi = ref.watch(settingsStreamProvider).value?.showGi ?? false;
     return Scaffold(
       appBar: AppBar(title: Text(t.manual_entry)),
       body: ListView(
@@ -132,12 +133,14 @@ class _ManualEntryScreenState extends ConsumerState<ManualEntryScreen> {
               ),
             ],
           ),
-          const SizedBox(height: AppSpace.sm),
-          TextField(
-            controller: _gi,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: t.glycemic_index),
-          ),
+          if (showGi) ...[
+            const SizedBox(height: AppSpace.sm),
+            TextField(
+              controller: _gi,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(labelText: t.glycemic_index),
+            ),
+          ],
           const SizedBox(height: AppSpace.lg),
           SizedBox(
             width: double.infinity,

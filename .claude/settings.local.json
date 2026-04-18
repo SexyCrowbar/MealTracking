@@ -18,7 +18,8 @@
       "Bash(flutter test *)",
       "Bash(flutter build *)",
       "Bash(xargs grep *)",
-      "Bash(./gradlew :receive_sharing_intent:compileDebugKotlin --info)"
+      "Bash(./gradlew :receive_sharing_intent:compileDebugKotlin --info)",
+      "Bash(flutter clean *)"
     ]
   }
 }
