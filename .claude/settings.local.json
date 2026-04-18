@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter --version)",
+      "Bash(where flutter.bat)",
+      "Bash(where flutter *)",
+      "Read(//c/flutter/**)",
+      "Bash(dart --version)",
+      "Bash(where dart *)",
+      "Read(//c/src/flutter/**)",
+      "Bash(export PATH=\"/c/Users/elekt/develop/flutter/bin:$PATH\")",
+      "Bash(flutter doctor *)",
+      "Bash(flutter create *)",
+      "Bash(flutter pub *)",
+      "Bash(dart run *)",
+      "Bash(flutter gen-l10n *)",
+      "Bash(flutter analyze *)",
+      "Bash(flutter test *)",
+      "Bash(flutter build *)",
+      "Bash(xargs grep *)",
+      "Bash(./gradlew :receive_sharing_intent:compileDebugKotlin --info)"
+    ]
+  }
+}
