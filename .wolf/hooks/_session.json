@@ -16,6 +16,11 @@
       "count": 1,
       "tokens": 2124,
       "first_read": "2026-05-04T09:23:14.368Z"
+    },
+    "D:/Projects/MealTracking/index.html": {
+      "count": 1,
+      "tokens": 675,
+      "first_read": "2026-05-04T09:47:57.455Z"
     }
   },
   "files_written": [
@@ -115,9 +120,9 @@
     "mobile/lib/l10n/app_en.arb": 1,
     "mobile/lib/l10n/app_uk.arb": 1
   },
-  "anatomy_hits": 1,
+  "anatomy_hits": 2,
   "anatomy_misses": 2,
   "repeated_reads_warned": 0,
   "cerebrum_warnings": 0,
-  "stop_count": 2
+  "stop_count": 3
 }

@@ -66,3 +66,5 @@
 | 12:23 | Edited mobile/lib/l10n/app_uk.arb | expanded (+7 lines) | ~100 |
 | 12:30 | Added log-time extras for saved meals (e.g. ketchup on top of risotto) | tables.dart (+extrasJson), database.dart (3→4), meal.dart (+MealExtra+extras list), meals_repo.dart (sum extras into totals, JSON column, traceability), log_portion_screen.dart (NEW full-screen replacing modal), saved_meals_library_screen.dart (push instead of modal), meal_details_sheet.dart (show extras list), app_en.arb, app_uk.arb | flutter analyze clean of new code; AI invoked only when extras present, reuses analyzeMeal+recipeIngredients path | ~3500 |
 | 12:25 | Session end: 14 writes across 9 files (tables.dart, database.dart, meal.dart, meals_repo.dart, log_portion_screen.dart) | 3 reads | ~8102 tok |
+| 12:50 | Removed legacy web PWA from repo root (predates the Flutter mobile app) | git rm -r index.html manifest.json sw.js js/ styles/ (16 files staged for deletion) | mobile/ is now the only application; cerebrum + anatomy updated | ~250 |
+| 12:49 | Session end: 14 writes across 9 files (tables.dart, database.dart, meal.dart, meals_repo.dart, log_portion_screen.dart) | 4 reads | ~8777 tok |

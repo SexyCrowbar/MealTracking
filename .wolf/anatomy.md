@@ -6,9 +6,6 @@
 ## ./
 
 - `CLAUDE.md` — OpenWolf (~57 tok)
-- `index.html` — AI Weight Loss Assistant (~675 tok)
-- `manifest.json` (~196 tok)
-- `sw.js` — Declares CACHE_NAME (~134 tok)
 
 ## .claude/
 

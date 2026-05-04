@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-04-27T14:47:47.447Z",
   "lifetime": {
-    "total_tokens_estimated": 9677,
-    "total_reads": 6,
-    "total_writes": 15,
+    "total_tokens_estimated": 18454,
+    "total_reads": 10,
+    "total_writes": 29,
     "total_sessions": 3,
-    "anatomy_hits": 1,
-    "anatomy_misses": 5,
+    "anatomy_hits": 3,
+    "anatomy_misses": 7,
     "repeated_reads_blocked": 1,
-    "estimated_savings_vs_bare_cli": 1232
+    "estimated_savings_vs_bare_cli": 1632
   },
   "sessions": [
     {
@@ -155,6 +155,117 @@
         "writes_count": 14,
         "repeated_reads_blocked": 0,
         "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-05-04-1205",
+      "started": "2026-05-04T09:05:16.667Z",
+      "ended": "2026-05-04T09:49:03.474Z",
+      "reads": [
+        {
+          "file": "D:/Projects/MealTracking/mobile/lib/domain/models/meal.dart",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "D:/Projects/MealTracking/mobile/lib/widgets/meal_details_sheet.dart",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "D:/Projects/MealTracking/mobile/lib/features/record/saved_meals_library_screen.dart",
+          "tokens_estimated": 2124,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "D:/Projects/MealTracking/index.html",
+          "tokens_estimated": 675,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "D:/Projects/MealTracking/mobile/lib/data/db/tables.dart",
+          "tokens_estimated": 73,
+          "action": "edit"
+        },
+        {
+          "file": "D:/Projects/MealTracking/mobile/lib/data/db/database.dart",
+          "tokens_estimated": 12,
+          "action": "edit"
+        },
+        {
+          "file": "D:/Projects/MealTracking/mobile/lib/data/db/database.dart",
+          "tokens_estimated": 127,
+          "action": "edit"
+        },
+        {
+          "file": "D:/Projects/MealTracking/mobile/lib/domain/models/meal.dart",
+          "tokens_estimated": 697,
+          "action": "create"
+        },
+        {
+          "file": "D:/Projects/MealTracking/mobile/lib/data/repositories/meals_repo.dart",
+          "tokens_estimated": 74,
+          "action": "edit"
+        },
+        {
+          "file": "D:/Projects/MealTracking/mobile/lib/data/repositories/meals_repo.dart",
+          "tokens_estimated": 683,
+          "action": "edit"
+        },
+        {
+          "file": "D:/Projects/MealTracking/mobile/lib/data/repositories/meals_repo.dart",
+          "tokens_estimated": 294,
+          "action": "edit"
+        },
+        {
+          "file": "D:/Projects/MealTracking/mobile/lib/features/record/log_portion_screen.dart",
+          "tokens_estimated": 3202,
+          "action": "create"
+        },
+        {
+          "file": "D:/Projects/MealTracking/mobile/lib/features/record/saved_meals_library_screen.dart",
+          "tokens_estimated": 79,
+          "action": "edit"
+        },
+        {
+          "file": "D:/Projects/MealTracking/mobile/lib/features/record/saved_meals_library_screen.dart",
+          "tokens_estimated": 64,
+          "action": "edit"
+        },
+        {
+          "file": "D:/Projects/MealTracking/mobile/lib/features/record/saved_meals_library_screen.dart",
+          "tokens_estimated": 0,
+          "action": "edit"
+        },
+        {
+          "file": "D:/Projects/MealTracking/mobile/lib/widgets/meal_details_sheet.dart",
+          "tokens_estimated": 442,
+          "action": "edit"
+        },
+        {
+          "file": "D:/Projects/MealTracking/mobile/lib/l10n/app_en.arb",
+          "tokens_estimated": 123,
+          "action": "edit"
+        },
+        {
+          "file": "D:/Projects/MealTracking/mobile/lib/l10n/app_uk.arb",
+          "tokens_estimated": 108,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 2799,
+        "output_tokens_estimated": 5978,
+        "reads_count": 4,
+        "writes_count": 14,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 2
       }
     }
   ],
