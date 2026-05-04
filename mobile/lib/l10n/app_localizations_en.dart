@@ -581,4 +581,126 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get queued_section_title => 'Pending analyses';
+
+  @override
+  String get saved_meals => 'Saved meals';
+
+  @override
+  String get saved_meals_log_subtitle => 'Log a portion from your recipes';
+
+  @override
+  String get new_saved_meal => 'New saved meal';
+
+  @override
+  String get new_saved_meal_subtitle =>
+      'Compose ingredients, AI calculates totals';
+
+  @override
+  String get saved_meal_name => 'Recipe name';
+
+  @override
+  String get saved_meal_name_hint => 'e.g., Chicken & rice';
+
+  @override
+  String get ingredients => 'Ingredients';
+
+  @override
+  String get ingredient_description => 'Ingredient';
+
+  @override
+  String get ingredient_description_hint => 'e.g., chicken breast, raw';
+
+  @override
+  String get ingredient_grams => 'g';
+
+  @override
+  String get add_ingredient => 'Add ingredient';
+
+  @override
+  String get remove_ingredient => 'Remove';
+
+  @override
+  String get calculate_and_save => 'Calculate with AI';
+
+  @override
+  String get recalculate_with_ai => 'Recalculate with AI';
+
+  @override
+  String get recipe_ai_failed =>
+      'AI calculation failed — you can enter totals manually';
+
+  @override
+  String get recipe_no_ingredients => 'Add at least one ingredient with grams';
+
+  @override
+  String get recipe_invalid_grams =>
+      'Each ingredient must have a positive weight in grams';
+
+  @override
+  String recipe_total_weight(String grams) {
+    return 'Total weight: $grams g';
+  }
+
+  @override
+  String get saved_meal_saved => 'Recipe saved';
+
+  @override
+  String get saved_meal_updated => 'Recipe updated';
+
+  @override
+  String get saved_meal_deleted => 'Recipe deleted';
+
+  @override
+  String get confirm_delete_saved_meal => 'Delete this saved recipe?';
+
+  @override
+  String get log_portion => 'Log a portion';
+
+  @override
+  String get log_this_portion => 'Log this portion';
+
+  @override
+  String get weight_eaten_g => 'Weight eaten (g)';
+
+  @override
+  String get saved_meals_empty => 'You haven\'t saved any recipes yet';
+
+  @override
+  String get saved_meals_empty_cta => 'Create your first recipe';
+
+  @override
+  String get search_saved_meals => 'Search recipes';
+
+  @override
+  String get edit_recipe => 'Edit recipe';
+
+  @override
+  String get save_recipe => 'Save recipe';
+
+  @override
+  String get per_100g_short => 'per 100 g';
+
+  @override
+  String kcal_per_100g(int kcal) {
+    return '$kcal kcal / 100 g';
+  }
+
+  @override
+  String get extras_optional => 'Extras (optional)';
+
+  @override
+  String get extras_subtitle =>
+      'Anything you added on top — calculated by AI on save';
+
+  @override
+  String get extras_added => 'Extras added';
+
+  @override
+  String get extras_calories_after_save => 'extras counted on save';
+
+  @override
+  String get add_extra => 'Add extra';
+
+  @override
+  String get extra_hint => 'e.g., ketchup, olive oil';
 }

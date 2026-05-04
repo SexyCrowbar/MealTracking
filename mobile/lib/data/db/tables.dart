@@ -34,8 +34,42 @@ class Meals extends Table {
   TextColumn get provider => text().nullable()();
   TextColumn get model => text().nullable()();
   IntColumn get analysisLatencyMs => integer().nullable()();
+  IntColumn get savedMealId => integer().nullable()();
+  TextColumn get extrasJson => text().nullable()();
   DateTimeColumn get createdAt =>
       dateTime().withDefault(currentDateAndTime)();
+}
+
+@DataClassName('SavedMealRow')
+class SavedMeals extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get name => text()();
+  RealColumn get totalWeightG => real()();
+  IntColumn get caloriesPer100g => integer()();
+  RealColumn get proteinPer100g => real().nullable()();
+  RealColumn get carbsPer100g => real().nullable()();
+  RealColumn get fatPer100g => real().nullable()();
+  IntColumn get glycemicIndex => integer().nullable()();
+  IntColumn get totalCalories => integer()();
+  RealColumn get totalProtein => real().nullable()();
+  RealColumn get totalCarbs => real().nullable()();
+  RealColumn get totalFat => real().nullable()();
+  TextColumn get provider => text().nullable()();
+  TextColumn get model => text().nullable()();
+  DateTimeColumn get createdAt =>
+      dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt =>
+      dateTime().withDefault(currentDateAndTime)();
+}
+
+@DataClassName('SavedMealIngredientRow')
+class SavedMealIngredients extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get savedMealId =>
+      integer().references(SavedMeals, #id, onDelete: KeyAction.cascade)();
+  IntColumn get position => integer()();
+  TextColumn get description => text()();
+  RealColumn get grams => real()();
 }
 
 @DataClassName('WeightEntryRow')

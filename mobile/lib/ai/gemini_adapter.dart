@@ -40,7 +40,9 @@ class GeminiAdapter implements MealAnalyzer {
   Future<MealAnalysis> analyzeMeal(AnalysisRequest request) async {
     final start = DateTime.now();
     final userText = request.textDescription?.trim();
-    if (!request.hasImage && (userText == null || userText.isEmpty)) {
+    if (!request.isRecipe &&
+        !request.hasImage &&
+        (userText == null || userText.isEmpty)) {
       throw AiAnalysisException('No image or description provided');
     }
     final prompt = PromptBuilder.systemInstruction(
@@ -48,12 +50,13 @@ class GeminiAdapter implements MealAnalyzer {
       profile: request.profile,
       diabeticRatio: request.diabeticRatio,
       textOnly: !request.hasImage,
+      recipeIngredients: request.recipeIngredients,
     );
 
     final parts = <Map<String, dynamic>>[
       {'text': prompt},
     ];
-    if (request.hasImage) {
+    if (!request.isRecipe && request.hasImage) {
       parts.add({
         'inline_data': {
           'mime_type': 'image/jpeg',
@@ -61,7 +64,7 @@ class GeminiAdapter implements MealAnalyzer {
         }
       });
     }
-    if (userText != null && userText.isNotEmpty) {
+    if (!request.isRecipe && userText != null && userText.isNotEmpty) {
       parts.add({'text': 'User description: $userText'});
     }
 

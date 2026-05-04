@@ -10,6 +10,8 @@ import 'barcode_scanner_screen.dart';
 import 'camera_screen.dart';
 import 'describe_screen.dart';
 import 'manual_entry_screen.dart';
+import 'saved_meal_create_screen.dart';
+import 'saved_meals_library_screen.dart';
 
 class RecordHomeScreen extends ConsumerWidget {
   const RecordHomeScreen({super.key});
@@ -49,6 +51,20 @@ class RecordHomeScreen extends ConsumerWidget {
           title: t.scan_barcode,
           subtitle: t.scan_barcode_subtitle,
           onTap: () => _openBarcodeScanner(context),
+        ),
+        const SizedBox(height: AppSpace.md),
+        _BigCard(
+          icon: Icons.menu_book_outlined,
+          title: t.saved_meals,
+          subtitle: t.saved_meals_log_subtitle,
+          onTap: () => _openSavedMealsLibrary(context),
+        ),
+        const SizedBox(height: AppSpace.md),
+        _BigCard(
+          icon: Icons.add_circle_outline,
+          title: t.new_saved_meal,
+          subtitle: t.new_saved_meal_subtitle,
+          onTap: () => _openSavedMealCreate(context),
         ),
         const SizedBox(height: AppSpace.md),
         _BigCard(
@@ -99,6 +115,18 @@ class RecordHomeScreen extends ConsumerWidget {
   void _openBarcodeScanner(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (_) => const BarcodeScannerScreen()),
+    );
+  }
+
+  void _openSavedMealsLibrary(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const SavedMealsLibraryScreen()),
+    );
+  }
+
+  void _openSavedMealCreate(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const SavedMealCreateScreen()),
     );
   }
 }

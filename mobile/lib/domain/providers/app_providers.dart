@@ -4,9 +4,11 @@ import '../../ai/gemini_adapter.dart';
 import '../../ai/groq_adapter.dart';
 import '../../ai/meal_analyzer.dart';
 import '../../core/constants.dart';
+import '../../data/db/dao/saved_meal_dao.dart';
 import '../../data/db/database.dart';
 import '../../data/repositories/meals_repo.dart';
 import '../../data/repositories/profile_repo.dart';
+import '../../data/repositories/saved_meals_repo.dart';
 import '../../data/repositories/settings_repo.dart';
 import '../../data/repositories/weight_repo.dart';
 import '../../data/secure_storage.dart';
@@ -32,6 +34,21 @@ final profileRepoProvider = Provider<ProfileRepository>((ref) {
 final mealsRepoProvider = Provider<MealsRepository>((ref) {
   final db = ref.watch(databaseProvider);
   return MealsRepository(db.mealDao);
+});
+
+final savedMealsRepoProvider = Provider<SavedMealsRepository>((ref) {
+  final db = ref.watch(databaseProvider);
+  return SavedMealsRepository(db.savedMealDao);
+});
+
+final savedMealsStreamProvider =
+    StreamProvider<List<SavedMealRow>>((ref) {
+  return ref.watch(savedMealsRepoProvider).watchAll();
+});
+
+final savedMealWithIngredientsProvider =
+    FutureProvider.family<SavedMealWithIngredients?, int>((ref, id) async {
+  return ref.watch(savedMealsRepoProvider).getWithIngredients(id);
 });
 
 final weightRepoProvider = Provider<WeightRepository>((ref) {

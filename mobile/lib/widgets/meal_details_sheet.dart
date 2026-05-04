@@ -169,6 +169,26 @@ class _MealDetailsSheet extends ConsumerWidget {
                 ),
               ),
             ],
+            if (meal.hasExtras) ...[
+              const SizedBox(height: AppSpace.md),
+              Text(
+                t.extras_added,
+                style: const TextStyle(
+                  color: AppColors.textMain,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: AppSpace.sm),
+              for (final e in meal.extras)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  child: Text(
+                    '• ${e.grams.toStringAsFixed(0)} ${t.ingredient_grams}  ${e.description}',
+                    style: const TextStyle(
+                        color: AppColors.textMuted, fontSize: 13),
+                  ),
+                ),
+            ],
             if (meal.provider != null && meal.model != null) ...[
               const SizedBox(height: AppSpace.sm),
               Text(
@@ -191,6 +211,8 @@ class _MealDetailsSheet extends ConsumerWidget {
         return 'AI · photo + text';
       case MealSource.aiText:
         return 'AI · text';
+      case MealSource.savedMeal:
+        return 'Recipe';
       case MealSource.manual:
       default:
         return 'Manual';

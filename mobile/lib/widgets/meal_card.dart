@@ -20,6 +20,8 @@ class MealCard extends StatelessWidget {
       case 'ai_photo':
       case 'ai_photo_text':
         return '📷';
+      case 'saved_meal':
+        return '🥘';
       case 'manual':
       default:
         return '🍽️';

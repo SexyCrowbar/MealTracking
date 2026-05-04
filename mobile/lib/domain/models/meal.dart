@@ -1,3 +1,21 @@
+class MealExtra {
+  const MealExtra({required this.description, required this.grams});
+  final String description;
+  final double grams;
+
+  Map<String, dynamic> toJson() => {'d': description, 'g': grams};
+
+  static MealExtra? fromJson(dynamic v) {
+    if (v is! Map) return null;
+    final d = v['d'];
+    final g = v['g'];
+    if (d is! String || d.trim().isEmpty) return null;
+    final grams = g is num ? g.toDouble() : null;
+    if (grams == null || grams <= 0) return null;
+    return MealExtra(description: d.trim(), grams: grams);
+  }
+}
+
 class Meal {
   const Meal({
     required this.id,
@@ -16,6 +34,7 @@ class Meal {
     this.provider,
     this.model,
     this.analysisLatencyMs,
+    this.extras = const [],
     required this.createdAt,
   });
 
@@ -35,7 +54,10 @@ class Meal {
   final String? provider;
   final String? model;
   final int? analysisLatencyMs;
+  final List<MealExtra> extras;
   final DateTime createdAt;
+
+  bool get hasExtras => extras.isNotEmpty;
 
   Meal copyWith({
     String? name,
@@ -65,6 +87,7 @@ class Meal {
         provider: provider,
         model: model,
         analysisLatencyMs: analysisLatencyMs,
+        extras: extras,
         createdAt: createdAt,
       );
 }

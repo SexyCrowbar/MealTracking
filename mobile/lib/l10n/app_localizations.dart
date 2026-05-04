@@ -1195,6 +1195,234 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pending analyses'**
   String get queued_section_title;
+
+  /// No description provided for @saved_meals.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved meals'**
+  String get saved_meals;
+
+  /// No description provided for @saved_meals_log_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Log a portion from your recipes'**
+  String get saved_meals_log_subtitle;
+
+  /// No description provided for @new_saved_meal.
+  ///
+  /// In en, this message translates to:
+  /// **'New saved meal'**
+  String get new_saved_meal;
+
+  /// No description provided for @new_saved_meal_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Compose ingredients, AI calculates totals'**
+  String get new_saved_meal_subtitle;
+
+  /// No description provided for @saved_meal_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipe name'**
+  String get saved_meal_name;
+
+  /// No description provided for @saved_meal_name_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., Chicken & rice'**
+  String get saved_meal_name_hint;
+
+  /// No description provided for @ingredients.
+  ///
+  /// In en, this message translates to:
+  /// **'Ingredients'**
+  String get ingredients;
+
+  /// No description provided for @ingredient_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Ingredient'**
+  String get ingredient_description;
+
+  /// No description provided for @ingredient_description_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., chicken breast, raw'**
+  String get ingredient_description_hint;
+
+  /// No description provided for @ingredient_grams.
+  ///
+  /// In en, this message translates to:
+  /// **'g'**
+  String get ingredient_grams;
+
+  /// No description provided for @add_ingredient.
+  ///
+  /// In en, this message translates to:
+  /// **'Add ingredient'**
+  String get add_ingredient;
+
+  /// No description provided for @remove_ingredient.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get remove_ingredient;
+
+  /// No description provided for @calculate_and_save.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculate with AI'**
+  String get calculate_and_save;
+
+  /// No description provided for @recalculate_with_ai.
+  ///
+  /// In en, this message translates to:
+  /// **'Recalculate with AI'**
+  String get recalculate_with_ai;
+
+  /// No description provided for @recipe_ai_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'AI calculation failed — you can enter totals manually'**
+  String get recipe_ai_failed;
+
+  /// No description provided for @recipe_no_ingredients.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least one ingredient with grams'**
+  String get recipe_no_ingredients;
+
+  /// No description provided for @recipe_invalid_grams.
+  ///
+  /// In en, this message translates to:
+  /// **'Each ingredient must have a positive weight in grams'**
+  String get recipe_invalid_grams;
+
+  /// No description provided for @recipe_total_weight.
+  ///
+  /// In en, this message translates to:
+  /// **'Total weight: {grams} g'**
+  String recipe_total_weight(String grams);
+
+  /// No description provided for @saved_meal_saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipe saved'**
+  String get saved_meal_saved;
+
+  /// No description provided for @saved_meal_updated.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipe updated'**
+  String get saved_meal_updated;
+
+  /// No description provided for @saved_meal_deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipe deleted'**
+  String get saved_meal_deleted;
+
+  /// No description provided for @confirm_delete_saved_meal.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this saved recipe?'**
+  String get confirm_delete_saved_meal;
+
+  /// No description provided for @log_portion.
+  ///
+  /// In en, this message translates to:
+  /// **'Log a portion'**
+  String get log_portion;
+
+  /// No description provided for @log_this_portion.
+  ///
+  /// In en, this message translates to:
+  /// **'Log this portion'**
+  String get log_this_portion;
+
+  /// No description provided for @weight_eaten_g.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight eaten (g)'**
+  String get weight_eaten_g;
+
+  /// No description provided for @saved_meals_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'You haven\'t saved any recipes yet'**
+  String get saved_meals_empty;
+
+  /// No description provided for @saved_meals_empty_cta.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your first recipe'**
+  String get saved_meals_empty_cta;
+
+  /// No description provided for @search_saved_meals.
+  ///
+  /// In en, this message translates to:
+  /// **'Search recipes'**
+  String get search_saved_meals;
+
+  /// No description provided for @edit_recipe.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit recipe'**
+  String get edit_recipe;
+
+  /// No description provided for @save_recipe.
+  ///
+  /// In en, this message translates to:
+  /// **'Save recipe'**
+  String get save_recipe;
+
+  /// No description provided for @per_100g_short.
+  ///
+  /// In en, this message translates to:
+  /// **'per 100 g'**
+  String get per_100g_short;
+
+  /// No description provided for @kcal_per_100g.
+  ///
+  /// In en, this message translates to:
+  /// **'{kcal} kcal / 100 g'**
+  String kcal_per_100g(int kcal);
+
+  /// No description provided for @extras_optional.
+  ///
+  /// In en, this message translates to:
+  /// **'Extras (optional)'**
+  String get extras_optional;
+
+  /// No description provided for @extras_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Anything you added on top — calculated by AI on save'**
+  String get extras_subtitle;
+
+  /// No description provided for @extras_added.
+  ///
+  /// In en, this message translates to:
+  /// **'Extras added'**
+  String get extras_added;
+
+  /// No description provided for @extras_calories_after_save.
+  ///
+  /// In en, this message translates to:
+  /// **'extras counted on save'**
+  String get extras_calories_after_save;
+
+  /// No description provided for @add_extra.
+  ///
+  /// In en, this message translates to:
+  /// **'Add extra'**
+  String get add_extra;
+
+  /// No description provided for @extra_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., ketchup, olive oil'**
+  String get extra_hint;
 }
 
 class _AppLocalizationsDelegate

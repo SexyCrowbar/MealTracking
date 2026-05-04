@@ -40,6 +40,7 @@ class MealSource {
   static const String aiPhoto = 'ai_photo';
   static const String aiPhotoText = 'ai_photo_text';
   static const String aiText = 'ai_text';
+  static const String savedMeal = 'saved_meal';
 }
 
 class AiProvider {

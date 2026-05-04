@@ -9,6 +9,7 @@ import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 import 'dao/meal_dao.dart';
 import 'dao/profile_dao.dart';
 import 'dao/queue_dao.dart';
+import 'dao/saved_meal_dao.dart';
 import 'dao/settings_dao.dart';
 import 'dao/weight_dao.dart';
 import 'tables.dart';
@@ -16,8 +17,23 @@ import 'tables.dart';
 part 'database.g.dart';
 
 @DriftDatabase(
-  tables: [Profiles, Meals, WeightEntries, AnalysisQueue, SettingsKv],
-  daos: [ProfileDao, MealDao, WeightDao, QueueDao, SettingsDao],
+  tables: [
+    Profiles,
+    Meals,
+    WeightEntries,
+    AnalysisQueue,
+    SettingsKv,
+    SavedMeals,
+    SavedMealIngredients,
+  ],
+  daos: [
+    ProfileDao,
+    MealDao,
+    WeightDao,
+    QueueDao,
+    SettingsDao,
+    SavedMealDao,
+  ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
@@ -25,7 +41,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.withExecutor(super.executor);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -37,6 +53,8 @@ class AppDatabase extends _$AppDatabase {
               'CREATE INDEX IF NOT EXISTS idx_weight_date ON weight_entries(date)');
           await customStatement(
               'CREATE INDEX IF NOT EXISTS idx_queue_status ON analysis_queue(status)');
+          await customStatement(
+              'CREATE INDEX IF NOT EXISTS idx_smi_meal ON saved_meal_ingredients(saved_meal_id)');
         },
         onUpgrade: (m, from, to) async {
           if (from < 2) {
@@ -65,6 +83,16 @@ class AppDatabase extends _$AppDatabase {
             await customStatement(
                 'CREATE INDEX IF NOT EXISTS idx_queue_status ON analysis_queue(status)');
             await customStatement('PRAGMA foreign_keys = ON');
+          }
+          if (from < 3) {
+            await m.createTable(savedMeals);
+            await m.createTable(savedMealIngredients);
+            await m.addColumn(meals, meals.savedMealId);
+            await customStatement(
+                'CREATE INDEX IF NOT EXISTS idx_smi_meal ON saved_meal_ingredients(saved_meal_id)');
+          }
+          if (from < 4) {
+            await m.addColumn(meals, meals.extrasJson);
           }
         },
       );

@@ -28,6 +28,9 @@ class _BarcodeScannerScreenState extends ConsumerState<BarcodeScannerScreen> {
     ],
   );
   bool _busy = false;
+  String? _lastCode;
+  DateTime? _lastCodeAt;
+  static const Duration _sameCodeCooldown = Duration(seconds: 3);
 
   @override
   void dispose() {
@@ -41,9 +44,16 @@ class _BarcodeScannerScreenState extends ConsumerState<BarcodeScannerScreen> {
         .map((b) => b.rawValue)
         .firstWhere((v) => v != null && v.isNotEmpty, orElse: () => null);
     if (code == null) return;
+    final now = DateTime.now();
+    if (_lastCode == code &&
+        _lastCodeAt != null &&
+        now.difference(_lastCodeAt!) < _sameCodeCooldown) {
+      return;
+    }
+    _lastCode = code;
+    _lastCodeAt = now;
     final t = AppLocalizations.of(context);
     setState(() => _busy = true);
-    await _controller.stop();
     try {
       final product = await OffClient().lookup(code);
       if (!mounted) return;
@@ -63,12 +73,10 @@ class _BarcodeScannerScreenState extends ConsumerState<BarcodeScannerScreen> {
         msg = t.barcode_lookup_failed;
       }
       showAppSnack(context, msg);
-      await _controller.start();
       if (mounted) setState(() => _busy = false);
     } catch (_) {
       if (!mounted) return;
       showAppSnack(context, t.barcode_lookup_failed);
-      await _controller.start();
       if (mounted) setState(() => _busy = false);
     }
   }

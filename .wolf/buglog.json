@@ -1,0 +1,232 @@
+{
+  "version": 1,
+  "bugs": [
+    {
+      "id": "bug-001",
+      "timestamp": "2026-05-03T22:30:00Z",
+      "error_message": "Barcode scanner flashes multiple times during scanning and rarely returns results",
+      "file": "mobile/lib/features/record/barcode_scanner_screen.dart",
+      "root_cause": "_onDetect called await _controller.stop() at start of every detection and await _controller.start() on every error path. The stop()/start() cycle (1) made the camera preview visibly flash black-on-black, and (2) reset MobileScannerController's noDuplicates dedup state — so the same barcode in frame would re-detect immediately on every restart, creating a tight detect→stop→fail→start→detect loop until the user moved the camera away.",
+      "fix": "Removed both _controller.stop() and _controller.start() calls in _onDetect — camera now stays running across the OFF lookup. Added application-level cooldown (_lastCode/_lastCodeAt with 3s _sameCodeCooldown) so a code that just failed cannot re-trigger immediately. _busy guard alone now prevents re-entrancy.",
+      "tags": [
+        "barcode",
+        "mobile_scanner",
+        "flutter",
+        "camera",
+        "detection-loop",
+        "race-condition"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T22:30:00Z"
+    },
+    {
+      "id": "bug-002",
+      "timestamp": "2026-05-03T20:40:59.967Z",
+      "error_message": "Missing import: ../../core/constants.dart",
+      "file": "mobile/lib/data/repositories/meals_repo.dart",
+      "root_cause": "Module(s) not imported: ../../core/constants.dart",
+      "fix": "Added import(s) for ../../core/constants.dart",
+      "tags": [
+        "auto-detected",
+        "missing-import",
+        "dart"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T20:40:59.967Z"
+    },
+    {
+      "id": "bug-003",
+      "timestamp": "2026-05-03T20:41:06.023Z",
+      "error_message": "Null/undefined access in ",
+      "file": "mobile/lib/data/repositories/meals_repo.dart",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "dart"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T20:41:06.023Z"
+    },
+    {
+      "id": "bug-004",
+      "timestamp": "2026-05-03T20:41:13.760Z",
+      "error_message": "Missing import: ../../data/repositories/saved_meals_repo.dart",
+      "file": "mobile/lib/domain/providers/app_providers.dart",
+      "root_cause": "Module(s) not imported: ../../data/repositories/saved_meals_repo.dart",
+      "fix": "Added import(s) for ../../data/repositories/saved_meals_repo.dart",
+      "tags": [
+        "auto-detected",
+        "missing-import",
+        "dart"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T20:41:13.760Z"
+    },
+    {
+      "id": "bug-005",
+      "timestamp": "2026-05-03T20:41:17.638Z",
+      "error_message": "Function not marked async",
+      "file": "mobile/lib/domain/providers/app_providers.dart",
+      "root_cause": "Function uses await but wasn't declared async",
+      "fix": "Added async modifier",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "dart"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T20:41:17.638Z"
+    },
+    {
+      "id": "bug-006",
+      "timestamp": "2026-05-03T20:41:18.473Z",
+      "error_message": "Incorrect value in code",
+      "file": "mobile/lib/domain/providers/app_providers.dart",
+      "root_cause": "Had '../../data/db/database.dart'",
+      "fix": "Changed to '../../data/db/dao/saved_meal_dao.dart'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "dart"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T20:41:18.473Z"
+    },
+    {
+      "id": "bug-007",
+      "timestamp": "2026-05-03T20:41:34.831Z",
+      "error_message": "Null/undefined access in ",
+      "file": "mobile/lib/ai/prompt.dart",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check) | Also: static String _recipeInstruction({; required List<RecipeIngredient> ingredients,",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "dart"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-03T20:41:48.743Z"
+    },
+    {
+      "id": "bug-008",
+      "timestamp": "2026-05-03T20:44:51.379Z",
+      "error_message": "Missing import: saved_meal_create_screen.dart, saved_meals_library_screen.dart",
+      "file": "mobile/lib/features/record/record_home_screen.dart",
+      "root_cause": "Module(s) not imported: saved_meal_create_screen.dart, saved_meals_library_screen.dart",
+      "fix": "Added import(s) for saved_meal_create_screen.dart, saved_meals_library_screen.dart",
+      "tags": [
+        "auto-detected",
+        "missing-import",
+        "dart"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T20:44:51.380Z"
+    },
+    {
+      "id": "bug-009",
+      "timestamp": "2026-05-03T20:45:59.492Z",
+      "error_message": "Incorrect value in code",
+      "file": "mobile/lib/features/record/saved_meal_create_screen.dart",
+      "root_cause": "Had '../../core/constants.dart'",
+      "fix": "Changed to '../../core/theme.dart'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "dart"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-03T20:45:59.492Z"
+    },
+    {
+      "id": "bug-010",
+      "timestamp": "2026-05-04T09:21:21.821Z",
+      "error_message": "Missing import: dart:convert",
+      "file": "mobile/lib/data/repositories/meals_repo.dart",
+      "root_cause": "Module(s) not imported: dart:convert",
+      "fix": "Added import(s) for dart:convert",
+      "tags": [
+        "auto-detected",
+        "missing-import",
+        "dart"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-04T09:21:21.821Z"
+    },
+    {
+      "id": "bug-011",
+      "timestamp": "2026-05-04T09:21:35.982Z",
+      "error_message": "Null/undefined access in ",
+      "file": "mobile/lib/data/repositories/meals_repo.dart",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "dart"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-04T09:21:35.982Z"
+    },
+    {
+      "id": "bug-012",
+      "timestamp": "2026-05-04T09:21:41.234Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "mobile/lib/data/repositories/meals_repo.dart",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "dart"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-04T09:21:41.234Z"
+    },
+    {
+      "id": "bug-013",
+      "timestamp": "2026-05-04T09:22:56.640Z",
+      "error_message": "Missing import: log_portion_screen.dart",
+      "file": "mobile/lib/features/record/saved_meals_library_screen.dart",
+      "root_cause": "Module(s) not imported: log_portion_screen.dart",
+      "fix": "Added import(s) for log_portion_screen.dart",
+      "tags": [
+        "auto-detected",
+        "missing-import",
+        "dart"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-04T09:22:56.640Z"
+    },
+    {
+      "id": "bug-014",
+      "timestamp": "2026-05-04T09:23:00.488Z",
+      "error_message": "Significant refactor of ",
+      "file": "mobile/lib/features/record/saved_meals_library_screen.dart",
+      "root_cause": "10 lines replaced/restructured",
+      "fix": "Rewrote 18→9 lines (10 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "dart"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-04T09:23:00.488Z"
+    }
+  ]
+}

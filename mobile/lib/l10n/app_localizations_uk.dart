@@ -582,4 +582,127 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get queued_section_title => 'Аналіз у черзі';
+
+  @override
+  String get saved_meals => 'Збережені страви';
+
+  @override
+  String get saved_meals_log_subtitle => 'Записати порцію зі своїх рецептів';
+
+  @override
+  String get new_saved_meal => 'Новий рецепт';
+
+  @override
+  String get new_saved_meal_subtitle =>
+      'Складіть інгредієнти, ШІ порахує підсумки';
+
+  @override
+  String get saved_meal_name => 'Назва рецепта';
+
+  @override
+  String get saved_meal_name_hint => 'напр., Курка з рисом';
+
+  @override
+  String get ingredients => 'Інгредієнти';
+
+  @override
+  String get ingredient_description => 'Інгредієнт';
+
+  @override
+  String get ingredient_description_hint => 'напр., куряче філе сире';
+
+  @override
+  String get ingredient_grams => 'г';
+
+  @override
+  String get add_ingredient => 'Додати інгредієнт';
+
+  @override
+  String get remove_ingredient => 'Прибрати';
+
+  @override
+  String get calculate_and_save => 'Порахувати через ШІ';
+
+  @override
+  String get recalculate_with_ai => 'Перерахувати через ШІ';
+
+  @override
+  String get recipe_ai_failed =>
+      'Не вдалося порахувати — введіть значення вручну';
+
+  @override
+  String get recipe_no_ingredients => 'Додайте хоча б один інгредієнт з вагою';
+
+  @override
+  String get recipe_invalid_grams =>
+      'Кожен інгредієнт має мати додатну вагу в грамах';
+
+  @override
+  String recipe_total_weight(String grams) {
+    return 'Загальна вага: $grams г';
+  }
+
+  @override
+  String get saved_meal_saved => 'Рецепт збережено';
+
+  @override
+  String get saved_meal_updated => 'Рецепт оновлено';
+
+  @override
+  String get saved_meal_deleted => 'Рецепт видалено';
+
+  @override
+  String get confirm_delete_saved_meal => 'Видалити цей рецепт?';
+
+  @override
+  String get log_portion => 'Записати порцію';
+
+  @override
+  String get log_this_portion => 'Записати цю порцію';
+
+  @override
+  String get weight_eaten_g => 'З\'їдена вага (г)';
+
+  @override
+  String get saved_meals_empty => 'Ви ще не зберегли жодного рецепта';
+
+  @override
+  String get saved_meals_empty_cta => 'Створити перший рецепт';
+
+  @override
+  String get search_saved_meals => 'Пошук рецептів';
+
+  @override
+  String get edit_recipe => 'Редагувати рецепт';
+
+  @override
+  String get save_recipe => 'Зберегти рецепт';
+
+  @override
+  String get per_100g_short => 'на 100 г';
+
+  @override
+  String kcal_per_100g(int kcal) {
+    return '$kcal ккал / 100 г';
+  }
+
+  @override
+  String get extras_optional => 'Додатки (необов\'язково)';
+
+  @override
+  String get extras_subtitle =>
+      'Все, що ви додали зверху — порахує ШІ під час збереження';
+
+  @override
+  String get extras_added => 'Додано';
+
+  @override
+  String get extras_calories_after_save =>
+      'додатки враховуються при збереженні';
+
+  @override
+  String get add_extra => 'Додати позицію';
+
+  @override
+  String get extra_hint => 'напр., кетчуп, олія';
 }

@@ -9,6 +9,12 @@ class ModelOption {
   final String label;
 }
 
+class RecipeIngredient {
+  const RecipeIngredient({required this.description, required this.grams});
+  final String description;
+  final double grams;
+}
+
 class AnalysisRequest {
   const AnalysisRequest({
     this.imageBytes,
@@ -18,6 +24,7 @@ class AnalysisRequest {
     required this.allergens,
     this.profile,
     this.diabeticRatio,
+    this.recipeIngredients,
   });
 
   final Uint8List? imageBytes;
@@ -28,7 +35,14 @@ class AnalysisRequest {
   final Profile? profile;
   final double? diabeticRatio;
 
+  /// When non-null, the request is a recipe-totals computation.
+  /// The adapter will ignore [imageBytes]/[textDescription] and use a
+  /// recipe-specific prompt that asks for sums across the listed ingredients.
+  final List<RecipeIngredient>? recipeIngredients;
+
   bool get hasImage => imageBytes != null && imageBytes!.isNotEmpty;
+  bool get isRecipe =>
+      recipeIngredients != null && recipeIngredients!.isNotEmpty;
 }
 
 abstract class MealAnalyzer {

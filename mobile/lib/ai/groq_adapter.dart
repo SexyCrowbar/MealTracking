@@ -39,7 +39,9 @@ class GroqAdapter implements MealAnalyzer {
   Future<MealAnalysis> analyzeMeal(AnalysisRequest request) async {
     final start = DateTime.now();
     final userText = request.textDescription?.trim();
-    if (!request.hasImage && (userText == null || userText.isEmpty)) {
+    if (!request.isRecipe &&
+        !request.hasImage &&
+        (userText == null || userText.isEmpty)) {
       throw AiAnalysisException('No image or description provided');
     }
     final prompt = PromptBuilder.systemInstruction(
@@ -47,12 +49,13 @@ class GroqAdapter implements MealAnalyzer {
       profile: request.profile,
       diabeticRatio: request.diabeticRatio,
       textOnly: !request.hasImage,
+      recipeIngredients: request.recipeIngredients,
     );
 
     final fullPrompt = StringBuffer()
       ..writeln(prompt)
       ..writeln(PromptBuilder.groqExample);
-    if (userText != null && userText.isNotEmpty) {
+    if (!request.isRecipe && userText != null && userText.isNotEmpty) {
       fullPrompt.writeln('User description: $userText');
     }
     fullPrompt.writeln('Return ONLY a JSON object — no commentary.');
@@ -60,7 +63,7 @@ class GroqAdapter implements MealAnalyzer {
     final content = <Map<String, dynamic>>[
       {'type': 'text', 'text': fullPrompt.toString()},
     ];
-    if (request.hasImage) {
+    if (!request.isRecipe && request.hasImage) {
       final imageDataUrl =
           'data:image/jpeg;base64,${base64Encode(request.imageBytes!)}';
       content.add({
