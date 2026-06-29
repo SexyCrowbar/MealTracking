@@ -21,16 +21,8 @@ class ProfileDao extends DatabaseAccessor<AppDatabase> with _$ProfileDaoMixin {
   }
 
   Future<void> upsertProfile(ProfilesCompanion entry) async {
-    final existing = await getProfile();
-    if (existing == null) {
-      await into(profiles).insert(
-        entry.copyWith(id: const Value(1), updatedAt: Value(DateTime.now())),
-        mode: InsertMode.insertOrReplace,
-      );
-    } else {
-      await (update(profiles)..where((p) => p.id.equals(1))).write(
-        entry.copyWith(updatedAt: Value(DateTime.now())),
-      );
-    }
+    await into(profiles).insertOnConflictUpdate(
+      entry.copyWith(id: const Value(1), updatedAt: Value(DateTime.now())),
+    );
   }
 }

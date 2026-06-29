@@ -151,25 +151,29 @@ class MealsRepository {
   Future<int> deleteMeal(int id) => _dao.deleteMeal(id);
 
   Future<void> updateMeal(Meal meal) async {
-    await _dao.updateMeal(MealRow(
-      id: meal.id,
-      date: meal.date,
-      time: meal.time,
-      name: meal.name,
-      calories: meal.calories,
-      protein: meal.protein,
-      carbs: meal.carbs,
-      fat: meal.fat,
-      glycemicIndex: meal.glycemicIndex,
-      healthScore: meal.healthScore,
-      allergenWarning: meal.allergenWarning,
-      estimatedInsulin: meal.estimatedInsulin,
-      source: meal.source,
-      provider: meal.provider,
-      model: meal.model,
-      analysisLatencyMs: meal.analysisLatencyMs,
-      createdAt: meal.createdAt,
-    ));
+    await _dao.updateMealFields(
+      meal.id,
+      MealsCompanion(
+        date: Value(meal.date),
+        time: Value(meal.time),
+        name: Value(meal.name),
+        calories: Value(meal.calories),
+        protein: Value(meal.protein),
+        carbs: Value(meal.carbs),
+        fat: Value(meal.fat),
+        glycemicIndex: Value(meal.glycemicIndex),
+        healthScore: Value(meal.healthScore),
+        allergenWarning: Value(meal.allergenWarning),
+        estimatedInsulin: Value(meal.estimatedInsulin),
+        source: Value(meal.source),
+        provider: Value(meal.provider),
+        model: Value(meal.model),
+        analysisLatencyMs: Value(meal.analysisLatencyMs),
+        savedMealId: Value(meal.savedMealId),
+        // extrasJson intentionally omitted — the domain model does not hold
+        // the raw JSON; it is reconstructed via _decodeExtras().
+      ),
+    );
   }
 
   Meal _toModel(MealRow r) => Meal(
@@ -189,6 +193,7 @@ class MealsRepository {
         provider: r.provider,
         model: r.model,
         analysisLatencyMs: r.analysisLatencyMs,
+        savedMealId: r.savedMealId,
         extras: _decodeExtras(r.extrasJson),
         createdAt: r.createdAt,
       );

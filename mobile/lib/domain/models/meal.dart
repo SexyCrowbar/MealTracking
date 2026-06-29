@@ -34,6 +34,7 @@ class Meal {
     this.provider,
     this.model,
     this.analysisLatencyMs,
+    this.savedMealId,
     this.extras = const [],
     required this.createdAt,
   });
@@ -54,6 +55,7 @@ class Meal {
   final String? provider;
   final String? model;
   final int? analysisLatencyMs;
+  final int? savedMealId;
   final List<MealExtra> extras;
   final DateTime createdAt;
 
@@ -69,6 +71,7 @@ class Meal {
     double? healthScore,
     String? allergenWarning,
     double? estimatedInsulin,
+    int? savedMealId,
   }) =>
       Meal(
         id: id,
@@ -87,6 +90,7 @@ class Meal {
         provider: provider,
         model: model,
         analysisLatencyMs: analysisLatencyMs,
+        savedMealId: savedMealId ?? this.savedMealId,
         extras: extras,
         createdAt: createdAt,
       );

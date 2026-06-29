@@ -15,6 +15,12 @@ class MealDao extends DatabaseAccessor<AppDatabase> with _$MealDaoMixin {
   Future<void> updateMeal(MealRow row) =>
       update(meals).replace(row);
 
+  /// Partial update — only the columns provided in [companion] are written;
+  /// others (savedMealId, extrasJson) are left untouched.
+  Future<void> updateMealFields(int id, MealsCompanion companion) async {
+    await (update(meals)..where((m) => m.id.equals(id))).write(companion);
+  }
+
   Future<int> deleteMeal(int id) =>
       (delete(meals)..where((m) => m.id.equals(id))).go();
 

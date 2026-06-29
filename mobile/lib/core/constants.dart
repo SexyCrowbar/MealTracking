@@ -77,6 +77,7 @@ class SettingsKey {
   static const String dinnerReminderTime = 'dinner_reminder_time';
   static const String notifyQueueCompletion = 'notify_queue_completion';
   static const String chartFlipHintShown = 'chart_flip_hint_shown';
+  static const String activeProvider = 'active_provider';
 }
 
 class NotificationId {

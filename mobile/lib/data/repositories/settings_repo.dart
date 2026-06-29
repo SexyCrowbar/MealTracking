@@ -23,7 +23,7 @@ class SettingsRepository {
     await _dao.setValue(SettingsKey.diabeticMode, s.diabeticMode.toString());
     await _dao.setValue(SettingsKey.insulinRatio, s.insulinRatio.toString());
     await _dao.setValue(SettingsKey.allergens, s.allergens);
-    await _dao.setValue('active_provider', s.activeProvider);
+    await _dao.setValue('SettingsKey.activeProvider', s.activeProvider);
     await _dao.setValue(SettingsKey.geminiModel, s.geminiModel);
     await _dao.setValue(SettingsKey.groqModel, s.groqModel);
     await _dao.setValue(SettingsKey.photoQuality, s.photoQuality);
@@ -52,7 +52,7 @@ class SettingsRepository {
         diabeticMode: (m[SettingsKey.diabeticMode] ?? 'false') == 'true',
         insulinRatio: double.tryParse(m[SettingsKey.insulinRatio] ?? '10') ?? 10,
         allergens: m[SettingsKey.allergens] ?? '',
-        activeProvider: m['active_provider'] ?? AiProvider.gemini,
+        activeProvider: m['SettingsKey.activeProvider'] ?? AiProvider.gemini,
         geminiModel: m[SettingsKey.geminiModel] ?? GeminiModel.defaultModel,
         groqModel: m[SettingsKey.groqModel] ?? GroqModel.defaultModel,
         photoQuality: m[SettingsKey.photoQuality] ?? PhotoQuality.medium,

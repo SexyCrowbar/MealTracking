@@ -42,12 +42,13 @@ class QueueDao extends DatabaseAccessor<AppDatabase> with _$QueueDaoMixin {
     );
   }
 
-  Future<void> markFailed(int id, String error, {bool finalAttempt = false}) async {
+  /// Marks a row back to 'pending' for a later retry. Does NOT touch
+  /// [retryCount] — the caller bumps it via [bumpRetry].
+  Future<void> markFailed(int id, String error) async {
     await (update(analysisQueue)..where((r) => r.id.equals(id))).write(
       AnalysisQueueCompanion(
-        status: Value(finalAttempt ? 'failed' : 'pending'),
+        status: const Value('pending'),
         errorMessage: Value(error),
-        retryCount: Value(0), // bumped via separate call
       ),
     );
   }

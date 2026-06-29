@@ -142,15 +142,17 @@ class QueueService {
         profile: prof,
         diabeticRatio: s.diabeticMode ? s.insulinRatio : null,
       ));
-      await meals.insertFromAnalysis(
-        analysis,
-        source: MealsRepository.sourceFor(
-          hadImage: imagePath != null,
-          hadText: hadText,
-        ),
-        at: row.createdAt,
-      );
-      await db.queueDao.markCompleted(row.id, jsonEncode(analysis.toJson()));
+      await db.transaction(() async {
+        await meals.insertFromAnalysis(
+          analysis,
+          source: MealsRepository.sourceFor(
+            hadImage: imagePath != null,
+            hadText: hadText,
+          ),
+          at: row.createdAt,
+        );
+        await db.queueDao.markCompleted(row.id, jsonEncode(analysis.toJson()));
+      });
       await PhotoCleanup.tryDelete(imagePath);
       if (onCompleted != null) {
         try {
