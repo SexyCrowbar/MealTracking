@@ -5,10 +5,16 @@ import 'package:dio/dio.dart';
 import '../core/constants.dart';
 import '../domain/models/meal_analysis.dart';
 import 'meal_analyzer.dart';
+import 'parse_utils.dart';
 import 'prompt.dart';
 
 class GroqAdapter implements MealAnalyzer {
-  GroqAdapter({Dio? dio}) : _dio = dio ?? Dio();
+  GroqAdapter({Dio? dio})
+      : _dio = dio ??
+            Dio(BaseOptions(
+              connectTimeout: const Duration(seconds: 30),
+              receiveTimeout: const Duration(seconds: 120),
+            ));
 
   final Dio _dio;
   static const _endpoint = 'https://api.groq.com/openai/v1/chat/completions';
@@ -111,6 +117,7 @@ class GroqAdapter implements MealAnalyzer {
     }
 
     final json = _parseJsonWithFallbacks(messageContent);
+    requireMealFields(json); // rejects partial regex matches (e.g. calories: 0)
     final latency = DateTime.now().difference(start).inMilliseconds;
     return MealAnalysis(
       name: (json['name'] as String?)?.trim().isNotEmpty == true

@@ -244,5 +244,9 @@
   "extras_added": "Extras added",
   "extras_calories_after_save": "extras counted on save",
   "add_extra": "Add extra",
-  "extra_hint": "e.g., ketchup, olive oil"
+  "extra_hint": "e.g., ketchup, olive oil",
+
+  "analysis_overloaded": "The AI service is temporarily busy — please try again in a few moments.",
+  "network_timeout": "Connection timed out — check your network and try again.",
+  "network_error": "A network error occurred — please try again."
 }

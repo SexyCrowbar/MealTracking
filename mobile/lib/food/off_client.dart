@@ -57,8 +57,15 @@ class OffClient {
     final Response<dynamic> resp;
     try {
       resp = await _dio.get<dynamic>(url);
+    } on DioException catch (e) {
+      final msg = e.type == DioExceptionType.connectionTimeout
+          ? 'Connection timed out'
+          : e.type == DioExceptionType.receiveTimeout
+              ? 'Server did not respond in time'
+              : 'Network error';
+      throw OffLookupException(msg);
     } catch (e) {
-      throw OffLookupException('Network error: $e');
+      throw OffLookupException('Unexpected error');
     }
     final data = resp.data;
     if (data is! Map) {

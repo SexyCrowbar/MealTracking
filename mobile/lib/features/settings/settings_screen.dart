@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants.dart';
-import '../../core/formatters.dart';
+
 import '../../core/theme.dart';
 import '../../domain/models/profile.dart';
 import '../../domain/models/settings.dart';
@@ -123,7 +123,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       labelText: s.activeProvider == AiProvider.groq
                           ? t.groq_api_key
                           : t.gemini_api_key,
-                      hintText: maskApiKey(_apiKeyCtrl.text),
+                      hintText: '••••••••',
                     ),
                     onChanged: (v) async {
                       await ref

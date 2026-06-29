@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -282,11 +283,24 @@ class _DescribeScreenState extends ConsumerState<DescribeScreen> {
       if (isOverloaded) {
         await _showOverloadDialog(providerKey);
       } else {
+        final String message;
+        if (e is AiAnalysisException) {
+          message = (e.statusCode == 429 || e.isOverloaded)
+              ? t.analysis_overloaded
+              : t.analysis_failed;
+        } else if (e is DioException) {
+          message = (e.type == DioExceptionType.connectionTimeout ||
+                  e.type == DioExceptionType.receiveTimeout)
+              ? t.network_timeout
+              : t.network_error;
+        } else {
+          message = t.network_error;
+        }
         await showDialog<void>(
           context: context,
           builder: (ctx) => AlertDialog(
             title: Text(t.analysis_failed),
-            content: SingleChildScrollView(child: Text(e.toString())),
+            content: SingleChildScrollView(child: Text(message)),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(ctx).pop(),

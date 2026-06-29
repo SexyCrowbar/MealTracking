@@ -5,10 +5,16 @@ import 'package:dio/dio.dart';
 import '../core/constants.dart';
 import '../domain/models/meal_analysis.dart';
 import 'meal_analyzer.dart';
+import 'parse_utils.dart';
 import 'prompt.dart';
 
 class GeminiAdapter implements MealAnalyzer {
-  GeminiAdapter({Dio? dio}) : _dio = dio ?? Dio();
+  GeminiAdapter({Dio? dio})
+      : _dio = dio ??
+            Dio(BaseOptions(
+              connectTimeout: const Duration(seconds: 30),
+              receiveTimeout: const Duration(seconds: 120),
+            ));
 
   final Dio _dio;
 
@@ -79,12 +85,13 @@ class GeminiAdapter implements MealAnalyzer {
       },
     };
 
-    final url = '$_baseUrl/${request.model}:generateContent?key=${request.apiKey}';
+    final url = '$_baseUrl/${request.model}:generateContent';
     final Response<dynamic> resp;
     try {
       resp = await _dio.post(
         url,
         data: body,
+        queryParameters: {'key': request.apiKey},
         options: Options(
           contentType: 'application/json',
           responseType: ResponseType.json,
@@ -100,17 +107,23 @@ class GeminiAdapter implements MealAnalyzer {
     final data = resp.data as Map<String, dynamic>;
     final candidates = data['candidates'] as List?;
     if (candidates == null || candidates.isEmpty) {
-      throw AiAnalysisException('No candidates in Gemini response',
+      throw AiAnalysisException('Gemini returned no candidates',
           statusCode: resp.statusCode);
     }
-    final content = candidates.first['content'] as Map<String, dynamic>?;
-    final parts2 = content?['parts'] as List?;
-    final text = parts2?.first['text'] as String?;
-    if (text == null) {
-      throw AiAnalysisException('Empty Gemini text');
+    final contentMap = candidates.first as Map?;
+    final content = contentMap?['content'] as Map?;
+    final partsList = content?['parts'] as List?;
+    String? text;
+    if (partsList is List && partsList.isNotEmpty) {
+      final firstPart = partsList.first as Map?;
+      text = firstPart?['text'] as String?;
+    }
+    if (text == null || text.trim().isEmpty) {
+      throw AiAnalysisException('Gemini response missing text');
     }
 
     final json = _parseJson(text);
+    requireMealFields(json);
     final latency = DateTime.now().difference(start).inMilliseconds;
     return MealAnalysis(
       name: (json['name'] as String?)?.trim().isNotEmpty == true
@@ -144,10 +157,11 @@ class GeminiAdapter implements MealAnalyzer {
           }
         ]
       };
-      final url = '$_baseUrl/$model:generateContent?key=$apiKey';
+      final url = '$_baseUrl/$model:generateContent';
       final resp = await _dio.post(
         url,
         data: body,
+        queryParameters: {'key': apiKey},
         options: Options(
           contentType: 'application/json',
           validateStatus: (s) => s != null && s < 500,
