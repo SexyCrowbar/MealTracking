@@ -199,12 +199,20 @@ class PlanScreen extends ConsumerWidget {
   }
 
   void _openSettings(BuildContext context) {
-    DefaultTabController.of(context);
-    final shell = context.findAncestorStateOfType<State>();
-    // Best-effort: settings is index 3 in HomeShell.
-    if (shell?.mounted == true) {
-      // Caller can navigate themselves; this is just a no-op fallback.
-    }
+    final t = AppLocalizations.of(context);
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(t.user_profile),
+        content: Text(t.setup_profile_msg),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(t.ok),
+          ),
+        ],
+      ),
+    );
   }
 }
 

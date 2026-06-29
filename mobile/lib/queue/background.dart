@@ -46,7 +46,16 @@ void backgroundCallbackDispatcher() {
       return true;
     } catch (e) {
       debugPrint('Background queue task failed: $e');
-      return false;
+      // Return true (task succeeded from workmanager's perspective) so it
+      // retries promptly — the failure was likely transient (offline, missing
+      // API key) and will resolve when those conditions change.  Only return
+      // false for genuinely unexpected errors that won't self-heal.
+      final isTransient = e.toString().contains('api') ||
+          e.toString().contains('key') ||
+          e.toString().toLowerCase().contains('connect') ||
+          e.toString().toLowerCase().contains('timeout') ||
+          e.toString().toLowerCase().contains('no api key');
+      return isTransient;
     } finally {
       await db.close();
     }

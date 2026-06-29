@@ -33,8 +33,10 @@ ZigZagPlan calculateZigZagPlan({
   required double currentWeightKg,
 }) {
   final isWeightLoss = goalWeightKg < currentWeightKg;
-  final deficit = isWeightLoss ? 500.0 : 0.0;
-  final dailyBase = tdee - deficit;
+  final isWeightGain = goalWeightKg > currentWeightKg;
+  // Use a 500 kcal deficit for loss or surplus for gain.
+  final adjustment = isWeightLoss ? -500.0 : (isWeightGain ? 500.0 : 0.0);
+  final dailyBase = tdee + adjustment;
   final high = (dailyBase * 1.15).round();
   final low = (dailyBase * 0.94).round();
   return ZigZagPlan(high: high, low: low, weeklyAverage: dailyBase);

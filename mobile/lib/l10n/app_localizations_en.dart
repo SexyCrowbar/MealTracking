@@ -703,4 +703,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get extra_hint => 'e.g., ketchup, olive oil';
+
+  @override
+  String get analysis_overloaded =>
+      'The AI service is temporarily busy — please try again in a few moments.';
+
+  @override
+  String get network_timeout =>
+      'Connection timed out — check your network and try again.';
+
+  @override
+  String get network_error => 'A network error occurred — please try again.';
 }

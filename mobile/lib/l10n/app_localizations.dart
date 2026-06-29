@@ -1423,6 +1423,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'e.g., ketchup, olive oil'**
   String get extra_hint;
+
+  /// No description provided for @analysis_overloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'The AI service is temporarily busy — please try again in a few moments.'**
+  String get analysis_overloaded;
+
+  /// No description provided for @network_timeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection timed out — check your network and try again.'**
+  String get network_timeout;
+
+  /// No description provided for @network_error.
+  ///
+  /// In en, this message translates to:
+  /// **'A network error occurred — please try again.'**
+  String get network_error;
 }
 
 class _AppLocalizationsDelegate

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:drift/drift.dart' show Value;
 
 import '../../core/constants.dart';
@@ -209,7 +210,8 @@ class MealsRepository {
         if (e != null) out.add(e);
       }
       return out;
-    } catch (_) {
+    } catch (e) {
+      debugPrint('Failed to decode meal extras: $e');
       return const [];
     }
   }

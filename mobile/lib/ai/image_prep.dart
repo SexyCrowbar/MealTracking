@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:image/image.dart' as img;
 
 import '../core/constants.dart';
+import 'meal_analyzer.dart'; // for AiAnalysisException
 
 class ImagePrep {
   const ImagePrep._();
@@ -27,7 +28,7 @@ class ImagePrep {
   }) {
     final decoded = img.decodeImage(bytes);
     if (decoded == null) {
-      throw StateError('Could not decode image');
+      throw AiAnalysisException('Image format not supported or corrupted');
     }
     img.Image working = decoded;
     final w = decoded.width;

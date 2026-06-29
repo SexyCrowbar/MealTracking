@@ -26,7 +26,7 @@ class NotificationService {
       final localTz = await FlutterTimezone.getLocalTimezone();
       tz.setLocalLocation(tz.getLocation(localTz));
     } catch (e) {
-      debugPrint('Local timezone lookup failed: $e');
+      debugPrint('Local timezone lookup failed: $e — using UTC fallback');
     }
 
     const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -58,8 +58,15 @@ class NotificationService {
   static Future<bool> requestPermissions() async {
     final android = _plugin.resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>();
-    final granted = await android?.requestNotificationsPermission();
-    return granted ?? false;
+    if (android == null) {
+      debugPrint('Notification permissions: platform not supported (non-Android)');
+      return false;
+    }
+    final granted = (await android.requestNotificationsPermission()) ?? false;
+    debugPrint(
+      'Notification permissions: $granted',
+    );
+    return granted;
   }
 
   /// Reschedules all daily meal reminders from the given times.

@@ -705,4 +705,16 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get extra_hint => 'напр., кетчуп, олія';
+
+  @override
+  String get analysis_overloaded =>
+      'ШІ-сервіс тимчасове перевантажений — повторіть спробу за кілька хвилин.';
+
+  @override
+  String get network_timeout =>
+      'Тайм-аут з\'єднання — перевірте мережу та повторіть спробу.';
+
+  @override
+  String get network_error =>
+      'Сталася мережева помилка — перевірте з\'єднання та повторіть спробу.';
 }

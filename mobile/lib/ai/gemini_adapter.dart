@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show debugPrint;
 
 import '../core/constants.dart';
 import '../domain/models/meal_analysis.dart';
@@ -187,15 +188,20 @@ class GeminiAdapter implements MealAnalyzer {
     }
     try {
       return jsonDecode(t) as Map<String, dynamic>;
-    } catch (_) {
-      // Try to extract a JSON object substring.
+    } catch (e) {
+      debugPrint('Gemini parse: direct JSON failed: $e');
+    }
+    // Try to extract a JSON object substring.
+    try {
       final start = t.indexOf('{');
       final end = t.lastIndexOf('}');
       if (start >= 0 && end > start) {
         return jsonDecode(t.substring(start, end + 1)) as Map<String, dynamic>;
       }
-      throw AiAnalysisException('Could not parse Gemini response: $text');
+    } catch (e) {
+      debugPrint('Gemini parse: substring JSON failed: $e');
     }
+    throw AiAnalysisException('Could not parse Gemini response: $text');
   }
 
   Map<String, dynamic> _responseSchema(bool diabetic) => {

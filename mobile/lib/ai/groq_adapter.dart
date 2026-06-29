@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show debugPrint;
 
 import '../core/constants.dart';
 import '../domain/models/meal_analysis.dart';
@@ -169,7 +170,9 @@ class GroqAdapter implements MealAnalyzer {
     // 1) Direct JSON parse.
     try {
       return jsonDecode(t) as Map<String, dynamic>;
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('Groq parse: direct JSON failed: $e');
+    }
     // 2) Strip markdown fences.
     if (t.startsWith('```')) {
       final firstNewline = t.indexOf('\n');
@@ -178,7 +181,9 @@ class GroqAdapter implements MealAnalyzer {
       t = t.trim();
       try {
         return jsonDecode(t) as Map<String, dynamic>;
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('Groq parse: fenced JSON failed: $e');
+      }
     }
     // 3) Extract first {...} object.
     final start = t.indexOf('{');
@@ -187,7 +192,9 @@ class GroqAdapter implements MealAnalyzer {
       try {
         return jsonDecode(t.substring(start, end + 1))
             as Map<String, dynamic>;
-      } catch (_) {}
+      } catch (e) {
+        debugPrint('Groq parse: substring JSON failed: $e');
+      }
     }
     // 4) Regex fallback for individual fields.
     final result = <String, dynamic>{};
