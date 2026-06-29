@@ -40,6 +40,10 @@ class AppDatabase extends _$AppDatabase {
 
   AppDatabase.withExecutor(super.executor);
 
+  /// Test-only constructor — receives a pre-built [QueryExecutor]
+  /// (typically [NativeDatabase.memory()] from [newTestDatabase]).
+  AppDatabase.forTesting(super.executor);
+
   @override
   int get schemaVersion => 4;
 
